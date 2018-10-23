@@ -1,0 +1,54 @@
+#!/usr/bin/env node
+
+//const repl = require('repl');
+const eval = require('./eval');
+var program = require('commander');
+const log = require('bunny-logger');
+const readline = require('readline');
+
+program
+  .version('0.0.1')
+  .option('-f, --file [file]', 'input from file')
+  .option('-x, --exec [text]', 'input from string')
+  .option('-i, --shell', 'run repl')
+  .option('-s, --stdin', 'input from stdin')
+  .parse(process.argv);
+
+
+if(program.file){
+	if(typeof(program.file)!=='string'){
+		log.error('no file given.');
+		process.exit(1);
+	}
+	log.info(program.file);
+}
+
+if(program.exec){
+	if(typeof(program.exec)!=='string'){
+		log.error('no input given.');
+		process.exit(1);
+	}
+	//log.info(program.exec);
+	eval.eval(program.exec);
+}
+if(program.shell){
+	//repl.start({prompt: '> ',eval: function(e){eval.eval(e);}});
+
+	const rl = readline.createInterface({
+  	input: process.stdin,
+  	output: process.stdout,
+  	prompt: '> '
+	});
+
+	rl.prompt();
+
+	rl.on('line', (line) => {
+		//log.info(line);
+		eval.eval(line);
+	});
+}
+
+if(program.stdin){
+	//log.info(process.stdin);
+}
+

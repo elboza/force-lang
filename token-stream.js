@@ -5,6 +5,7 @@ const log = require('bunny-logger');
 class TokenStream{
   constructor(tokens, filename){
     if(!Array.isArray(tokens)){
+      //return false;
       throw new TypeError('tokens must be passed to TokenStream as an array.');
     }
     this._tokens = tokens;
@@ -17,19 +18,22 @@ class TokenStream{
   }
   lookahead(index) {
     if (this._tokens.length <= index) {
-      throw new Error('Cannot read past the end of a stream');
+      return false;
+      //throw new Error('Cannot read past the end of a stream');
     }
     return this._tokens[index];
   }
   peek() {
     if (this._tokens.length === 0) {
-      throw new Error('Cannot read past the end of a stream');
+      return false;
+      //throw new Error('Cannot read past the end of a stream');
     }
     return this._tokens[0];
   }
   advance() {
     if (this._tokens.length === 0) {
-      throw new Error('Cannot read past the end of a stream');
+      return false;
+      //throw new Error('Cannot read past the end of a stream');
     }
     this._col++;
     try{

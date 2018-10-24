@@ -1,0 +1,59 @@
+TODO
+
+!
+@
+.
+emit
+json
+n:+
+s:+
+a:+
+n:-
+n:*
+n:/
++
+-
+*
+/
+included
+a:@
+a:!
+m:@
+m:!
+a:each
+a:length
+f:slurp
+net:get
+net:post
+j:encode
+j:decode
+j:parse
+j:stringify
+s:@
+s:!
+= < > <= >= 
+&& ||
+not
+if
+while
+case of
+required
+s:split
+s:join
+a:join
+a:push
+a:pop
+m:keys
+m:values
+>r r> r@ r!
+( func )
+dup
+swap
+drop
+ndrop
+exit
+nbye
+cr
+.?
+.""
+.()

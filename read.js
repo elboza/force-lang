@@ -6,7 +6,7 @@ class Read{
 		return new TokenStream(e.split(''));
 	}
 	is_delimiter(e){
-		if(this.is_whitespace(e) /* || eof */) return true;
+		if(this.is_whitespace(e) || this.is_eof(e)) return true;
 		return false;
 	}
 	is_whitespace(e){
@@ -14,22 +14,31 @@ class Read{
 		return ws.includes(e);
 	}
 	is_digit(e){
+		if(this.is_eof(e)) return false;
 		const num = e - '0';
 		return e>=0 && e<=9 ? true : false ;
 	}
 	is_hex_digit(e){
+		if(this.is_eof(e)) return false;
 		const hex_letters = ['a','b,','c','d','e','f'];
 		if(this.is_digit(e) || hex_letters.includes(e.toLowerCase())) return true;
 		return false;
 	}
 	is_bin_digit(e){
+		if(this.is_eof(e)) return false;
 		return e == 0 || e == 1 ? true : false ;
 	}
 	is_num(e){
-		if(e == '+' || e == '-' || this.is_digit(e)){
+		if( (e.peek() == '+' && this.is_digit(e.lookahead(1))) || 
+			(e.peek() == '-' ) && this.is_digit(e.lookahead(1))|| 
+			this.is_digit(e.peek())
+			){
 			return true;
 		}
 		return false;
+	}
+	is_eof(e){
+		return e===false;
 	}
 	eat_whitespaces(e){
 		try{
@@ -147,7 +156,7 @@ class Read{
 	eat_word(e){
 		var str = '';
 		try{
-			while(!this.is_whitespace(e.peek())){
+			while(!this.is_delimiter(e.peek())){
 				str += e.advance();
 			}
 		}catch(e){
@@ -161,7 +170,8 @@ class Read{
 	read(e){
 		try{
 			this.eat_whitespaces(e);
-			if(this.is_num(e.peek())) return {"_type":"TC_NUM", "_where": this.where(e), "_datum": this.eat_number(e)};
+			if(this.is_eof(e.peek())) return false;
+			if(this.is_num(e)) return {"_type":"TC_NUM", "_where": this.where(e), "_datum": this.eat_number(e)};
 			if(this.is_string(e.peek())) return {"_type":"TC_STR", "_where": this.where(e), "_datum": this.eat_string(e)};
 			return {"_type":"TC_WORD", "_where": this.where(e), "_datum": this.eat_word(e)};
 		}catch(e){

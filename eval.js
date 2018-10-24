@@ -3,12 +3,21 @@ var TokenStream = require('./token-stream');
 const read = require('./read');
 const env = require('./env');
 const NativeLib = require('./native_lib');
+const loadfile = require('./load-file');
+
 
 class Eval{
 
 	constructor(){
 		this.mode = 'interpret';
 		this.s = env.s;
+		this._load_lib = true;
+		//if(this._load_lib) this.load_lib();
+	}
+
+	async load_lib(){
+		var x = await loadfile.load(__dirname + '/lib.j');
+		this.eval(x);
 	}
 
 	set_mode(x){
@@ -85,6 +94,12 @@ class Eval{
 						if(y._datum==';') {this.mode = 'interpret'; break;}
 					}
 					env.set(func_name._datum, {_type: 'TC_COMP_FUNC', _datum: body}, 'TC_COMP_FUNC', func_name._where);
+					continue;
+				}
+				if(x._datum == 'see'){
+					var func_name = read.read(stream);
+					NativeLib.see_func(func_name._datum);
+					continue;
 				}
 			}
 			this.eval_parsed_step(x);

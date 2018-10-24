@@ -5,6 +5,11 @@ const eval = require('./eval');
 var program = require('commander');
 const log = require('bunny-logger');
 const readline = require('readline');
+const loadfile = require('./load-file');
+
+(async function main(){
+
+
 
 program
   .version('0.0.1')
@@ -14,6 +19,7 @@ program
   .option('-s, --stdin', 'input from stdin')
   .parse(process.argv);
 
+await eval.load_lib();
 
 if(program.file){
 	if(typeof(program.file)!=='string'){
@@ -21,6 +27,8 @@ if(program.file){
 		process.exit(1);
 	}
 	log.info(program.file);
+	var x = await loadfile.load(program.file);
+	eval.eval(x);
 }
 
 if(program.exec){
@@ -52,3 +60,4 @@ if(program.stdin){
 	//log.info(process.stdin);
 }
 
+})();

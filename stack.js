@@ -36,6 +36,10 @@ class Stack{
 	}
 	print(){
 		var pos=1;
+		if(this._stack.length == 0){
+			log.info('(empty)');
+			return;
+		}
 		for(var item of this._stack){
 			log.info(`${pos}: ${this.item_to_str(item)}`);
 			pos++;

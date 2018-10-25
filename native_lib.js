@@ -31,6 +31,15 @@ class NativeLib{
 		}
 		log.info('');
 	}
+	emit_func(){
+		const x = env.s.pop();
+		//log.info(x);
+		if(x._type === 'TC_NUM'){
+			process.stdout.write(String.fromCharCode(x._datum));
+			return;
+		}
+		log.info(`unknown item type ${x._type} of ${x._datum}`);
+	}
 	see_func(func_name){
 		var x=env.lookup(func_name);
 		if(!x){
@@ -55,6 +64,69 @@ class NativeLib{
 				break;
 		}
 	}
+	print_tos_func(){
+		const x = env.s.pop();
+		if(!x) return;
+		//log.info(x);
+		switch(x._type){
+			case 'TC_NUM':
+			case 'TC_STR':
+				log.info(x._datum);
+				break;
+			case 'TC_VAR':
+				log.info(x._name);
+				break;
+			default:
+				log.info(`unknown: { ${x._type} ${x._datum} }`);
+				break;
+		}
+	}
+	print_debug_tos_func(){
+		const x = env.s.pop();
+		if(!x) return;
+		//log.info(x);
+		switch(x._type){
+			case 'TC_NUM':
+			case 'TC_STR':
+				log.info(`{ ${x._type} ${x._datum} }`);
+				break;
+			case 'TC_VAR':
+				log.info(`{ ${x._type} ${x._name} ${x._datum._datum} }`);
+				break;
+			default:
+				log.info(`unknown: { ${x._type} ${x._datum} }`);
+				break;
+		}
+	}
+	assign_var_func(){
+		const varx = env.s.pop();
+		const val = env.s.pop();
+		if(!varx || !val) return;
+		//log.info(varx);
+		//log.info(val);
+		switch(val._type){
+			case'TC_NUM':
+			case 'TC_STR':
+				varx._datum = val;
+				env.set(varx._name, val, varx._type, varx._where);
+				break;
+			default:
+				break;
+		}
+	}
+	read_var_func(){
+		const varx = env.s.pop();
+		if(!varx) return;
+		//log.info(varx);
+		switch(varx._datum._type){
+			case'TC_NUM':
+			case 'TC_STR':
+				env.s.push(varx._datum);
+				break;
+			default:
+				break;
+		}
+	}
 	populate(){
 		env.set('pippo',{_type: 'TC_NATIVE_FUNC', _datum: this.test_func}, 'TC_WORD');
 		env.set('bye',{_type: 'TC_NATIVE_FUNC', _datum: this.bye_func}, 'TC_WORD');
@@ -62,6 +134,11 @@ class NativeLib{
 		env.set('.s',{_type: 'TC_NATIVE_FUNC', _datum: this.print_stack_func}, 'TC_WORD');
 		env.set('.e',{_type: 'TC_NATIVE_FUNC', _datum: this.print_env_func}, 'TC_WORD');
 		env.set('words',{_type: 'TC_NATIVE_FUNC', _datum: this.print_words_func}, 'TC_WORD');
+		env.set('emit',{_type: 'TC_NATIVE_FUNC', _datum: this.emit_func}, 'TC_WORD');
+		env.set('.',{_type: 'TC_NATIVE_FUNC', _datum: this.print_tos_func}, 'TC_WORD');
+		env.set('.?',{_type: 'TC_NATIVE_FUNC', _datum: this.print_debug_tos_func}, 'TC_WORD');
+		env.set('!',{_type: 'TC_NATIVE_FUNC', _datum: this.assign_var_func}, 'TC_WORD');
+		env.set('@',{_type: 'TC_NATIVE_FUNC', _datum: this.read_var_func}, 'TC_WORD');
 	}
 };
 

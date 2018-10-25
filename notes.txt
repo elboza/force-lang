@@ -1,9 +1,5 @@
 TODO
 
-!
-@
-.
-emit
 json
 n:+
 s:+
@@ -53,7 +49,5 @@ drop
 ndrop
 exit
 nbye
-cr
-.?
 .""
 .()

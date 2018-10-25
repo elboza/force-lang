@@ -39,7 +39,7 @@ class Env{
 	set_norm(name, val, type, where){
 		var x;
 		if(x=this.lookup(name)){
-			x._datum._value = val;
+			x._datum = val;
 		}else{
 			x=new dict_obj();
 			x._type = type;

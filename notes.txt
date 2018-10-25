@@ -1,6 +1,5 @@
 TODO
 
-json
 n:+
 s:+
 a:+
@@ -49,5 +48,6 @@ drop
 ndrop
 exit
 nbye
+.j  (print pretty json)
 .""
 .()

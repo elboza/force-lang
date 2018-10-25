@@ -1,4 +1,5 @@
 const log = require('bunny-logger');
+const JSON5 = require('json5');
 var TokenStream = require('./token-stream');
 
 class Read{
@@ -51,6 +52,9 @@ class Read{
 	}
 	is_string(e){
 		return (e == '"')? true : false ;
+	}
+	is_json(e){
+		return (e === '{' || e === '[')? true : false ;
 	}
 	eat_string(e){
 		var str = '';
@@ -164,6 +168,31 @@ class Read{
 		}
 		return str;
 	}
+	eat_json(e){
+		if(!this.is_json(e.peek())) return '{}';
+		var opening_char, closing_char;
+		if(e.peek() === '{'){
+			opening_char = '{';
+			closing_char = '}';
+		}
+		if(e.peek() === '['){
+			opening_char = '[';
+			closing_char = ']';
+		}
+		var str = '';
+		var level = 0;
+		var instring = 0;
+		
+		do{
+			var x=e.advance();
+			//if(x==='"' || x==="'") instring=instring++ mod 2
+			if(x===opening_char) level++;
+			if(x===closing_char) level--;
+			str += x;
+		}while(e.peek()!==false && level !=0 /*&& x!==closing_char*/);
+		//log.info(str);
+		return JSON5.parse(str);
+	}
 	where(e){
 		return {"file":e._filename, "line":e._line, "col":e._col};
 	}
@@ -173,6 +202,7 @@ class Read{
 			if(this.is_eof(e.peek())) return false;
 			if(this.is_num(e)) return {"_type":"TC_NUM", "_where": this.where(e), "_datum": this.eat_number(e)};
 			if(this.is_string(e.peek())) return {"_type":"TC_STR", "_where": this.where(e), "_datum": this.eat_string(e)};
+			if(this.is_json(e.peek())) return {"_type":"TC_JSON", "_where": this.where(e), "_datum": this.eat_json(e)};
 			return {"_type":"TC_WORD", "_where": this.where(e), "_datum": this.eat_word(e)};
 		}catch(e){
 			return false;

@@ -73,6 +73,9 @@ class NativeLib{
 			case 'TC_STR':
 				log.info(x._datum);
 				break;
+			case 'TC_JSON':
+				log.info(JSON.stringify(x._datum));
+				break;
 			case 'TC_VAR':
 				log.info(x._name);
 				break;
@@ -89,6 +92,9 @@ class NativeLib{
 			case 'TC_NUM':
 			case 'TC_STR':
 				log.info(`{ ${x._type} ${x._datum} }`);
+				break;
+			case 'TC_JSON':
+				log.info(`{ ${x._type} ${JSON.stringify(x._datum)} }`);
 				break;
 			case 'TC_VAR':
 				log.info(`{ ${x._type} ${x._name} ${x._datum._datum} }`);

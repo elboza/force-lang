@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "bunny-logger": "0.0.2",
-    "commander": "^2.19.0"
+    "commander": "^2.19.0",
+    "json5": "^2.1.0"
   }
 }

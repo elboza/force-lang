@@ -28,6 +28,9 @@ class Stack{
 			case 'TC_VAR':
 				str += ' ' + item._datum._datum;
 				break;
+			case 'TC_JSON':
+				str += ' ' + JSON.stringify(item._datum);
+				break;
 			default:
 				break;
 		}

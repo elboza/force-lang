@@ -26,7 +26,8 @@ class Stack{
 				str += ' ' + item._datum;
 				break;
 			case 'TC_VAR':
-				str += ' ' + item._datum._datum;
+				if(item._datum._type=='TC_JSON') str += ' ' + JSON.stringify(item._datum._datum);
+				else str += ' ' + item._datum._datum;
 				break;
 			case 'TC_JSON':
 				str += ' ' + JSON.stringify(item._datum);

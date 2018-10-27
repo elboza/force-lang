@@ -113,8 +113,9 @@ class NativeLib{
 		switch(val._type){
 			case'TC_NUM':
 			case 'TC_STR':
+			case 'TC_JSON':
 				varx._datum = val;
-				env.set(varx._name, val, varx._type, varx._where);
+				//env.set(varx._name, val, varx._type, varx._where);
 				break;
 			default:
 				break;
@@ -127,6 +128,7 @@ class NativeLib{
 		switch(varx._datum._type){
 			case'TC_NUM':
 			case 'TC_STR':
+			case 'TC_JSON':
 				env.s.push(varx._datum);
 				break;
 			default:

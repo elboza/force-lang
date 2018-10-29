@@ -56,6 +56,33 @@ class Read{
 	is_json(e){
 		return (e === '{' || e === '[')? true : false ;
 	}
+	eat_line_comment(e){
+		while(e.peek()!='\n' && !this.is_eof(e.peek())){
+			e.advance();
+		}
+	}
+	eat_comments(e){
+		if(e.peek()=='#' && e.lookahead(1)=='!'){
+			this.eat_line_comment(e);
+		}
+		if(e.peek()=='/' && e.lookahead(1)=='/'){
+			this.eat_line_comment(e);
+		}
+		if(e.peek()=='\\'){
+			this.eat_line_comment(e);
+		}
+		if(e.peek()=='-' && e.lookahead(1)=='-'){
+			this.eat_line_comment(e);
+		}
+		if(e.peek()=='/' && e.lookahead(1)=='*'){
+			while(e.peek()!='*' || e.lookahead(1)!='/'){
+				if(this.is_eof(e.peek())) return;
+				e.advance();
+			}
+			e.advance();
+			e.advance();
+		}
+	}
 	eat_string(e){
 		var str = '';
 		try{
@@ -102,6 +129,7 @@ class Read{
 			if(e.peek()=='0' && e.lookahead(1) == 'x') return sign*this.eat_hex(e);
 			if(e.peek()=='0' && e.lookahead(1) == 'b') return sign*this.eat_bin(e);
 			while(!this.is_delimiter(e.peek())){
+				this.eat_comments(e);
 				if(!fract && this.is_digit(e.peek())) num = num*10 + (e.advance()-'0');
 				else if(fract && this.is_digit(e.peek())) fract_num = fract_num*10 + (e.advance()-'0');
 				else if(e.peek()=='.'){fract=true;e.advance();}
@@ -121,6 +149,7 @@ class Read{
 		try{
 			if(e.peek()=='0' && e.lookahead(1) == 'x'){e.advance();e.advance();}
 			while(!this.is_delimiter(e.peek())){
+				this.eat_comments(e);
 				if(this.is_hex_digit(e.peek())){
 					str += e.advance();
 				}
@@ -140,6 +169,7 @@ class Read{
 		try{
 			if(e.peek()=='0' && e.lookahead(1) == 'b'){e.advance();e.advance();}
 			while(!this.is_delimiter(e.peek())){
+				this.eat_comments(e);
 				if(this.is_bin_digit(e.peek())){
 					str += e.advance();
 				}
@@ -154,13 +184,11 @@ class Read{
 		}
 		return parseInt(str,2);
 	}
-	eat_comments(e){
-
-	}
 	eat_word(e){
 		var str = '';
 		try{
 			while(!this.is_delimiter(e.peek())){
+				this.eat_comments(e);
 				str += e.advance();
 			}
 		}catch(e){
@@ -182,8 +210,11 @@ class Read{
 		var str = '';
 		var level = 0;
 		var instring = 0;
+		var json_line = e._line;
+		var json_col = e._col;
 		
 		do{
+			this.eat_comments(e);
 			var x=e.advance();
 			//if(x==='"' || x==="'") instring=instring++ mod 2
 			if(x===opening_char) level++;
@@ -191,7 +222,13 @@ class Read{
 			str += x;
 		}while(e.peek()!==false && level !=0 /*&& x!==closing_char*/);
 		//log.info(str);
-		return JSON5.parse(str);
+		try{
+			return JSON5.parse(str);
+		}catch(err){
+			log.error(`error in json obj at line ${json_line}, col ${json_col}`);
+			if(e._filename) log.error(`in ${e._filename} file`);
+			log.error(err);
+		}
 	}
 	where(e){
 		return {"file":e._filename, "line":e._line, "col":e._col};
@@ -199,6 +236,7 @@ class Read{
 	read(e){
 		try{
 			this.eat_whitespaces(e);
+			this.eat_comments(e);
 			if(this.is_eof(e.peek())) return false;
 			if(this.is_num(e)) return {"_type":"TC_NUM", "_where": this.where(e), "_datum": this.eat_number(e)};
 			if(this.is_string(e.peek())) return {"_type":"TC_STR", "_where": this.where(e), "_datum": this.eat_string(e)};

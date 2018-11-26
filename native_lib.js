@@ -135,6 +135,40 @@ class NativeLib{
 				break;
 		}
 	}
+	not_func(){
+		if(!env.is_bool(env.TOS())){
+			log.info('TOS is not a bool. aborting operation...');
+			return;
+		}
+		let x = env.get_bool_val(env.s.pop());
+		env.s.push(env.set_bool_val(!x));
+	}
+	and_func(){
+		if(!env.is_bool(env.TOS())){
+			log.info('TOS is not a bool. aborting operation...');
+			return;
+		}
+		if(!env.is_bool(env.TOS2())){
+			log.info('TOS2 is not a bool. aborting operation...');
+			return;
+		}
+		let a=env.get_bool_val(env.s.pop());
+		let b=env.get_bool_val(env.s.pop());
+		env.s.push(env.set_bool_val(a&&b));
+	}
+	or_func(){
+		if(!env.is_bool(env.TOS())){
+			log.info('TOS is not a bool. aborting operation...');
+			return;
+		}
+		if(!env.is_bool(env.TOS2())){
+			log.info('TOS2 is not a bool. aborting operation...');
+			return;
+		}
+		let a=env.get_bool_val(env.s.pop());
+		let b=env.get_bool_val(env.s.pop());
+		env.s.push(env.set_bool_val(a||b));
+	}
 	populate(){
 		env.set('pippo',{_type: 'TC_NATIVE_FUNC', _datum: this.test_func}, 'TC_WORD');
 		env.set('bye',{_type: 'TC_NATIVE_FUNC', _datum: this.bye_func}, 'TC_WORD');
@@ -147,6 +181,9 @@ class NativeLib{
 		env.set('.?',{_type: 'TC_NATIVE_FUNC', _datum: this.print_debug_tos_func}, 'TC_WORD');
 		env.set('!',{_type: 'TC_NATIVE_FUNC', _datum: this.assign_var_func}, 'TC_WORD');
 		env.set('@',{_type: 'TC_NATIVE_FUNC', _datum: this.read_var_func}, 'TC_WORD');
+		env.set('not',{_type: 'TC_NATIVE_FUNC', _datum: this.not_func}, 'TC_WORD');
+		env.set('and',{_type: 'TC_NATIVE_FUNC', _datum: this.and_func}, 'TC_WORD');
+		env.set('or',{_type: 'TC_NATIVE_FUNC', _datum: this.or_func}, 'TC_WORD');
 	}
 };
 

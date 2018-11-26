@@ -23,6 +23,7 @@ class Stack{
 		switch(item._type){
 			case 'TC_NUM':
 			case 'TC_STR':
+			case 'TC_BOOL':
 				str += ' ' + item._datum;
 				break;
 			case 'TC_VAR':

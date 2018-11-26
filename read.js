@@ -41,6 +41,11 @@ class Read{
 	is_eof(e){
 		return e===false;
 	}
+	is_bool(e){
+		if((e.peek() == 'T') || (e.peek() == 'F'))
+			if(this.is_delimiter(e.lookahead(1))) return true;
+		return false;
+	}
 	eat_whitespaces(e){
 		try{
 			while(this.is_whitespace(e.peek())){
@@ -184,6 +189,18 @@ class Read{
 		}
 		return parseInt(str,2);
 	}
+	eat_bool(e){
+		var str = '';
+		try{
+			while(!this.is_delimiter(e.peek())){
+				this.eat_comments(e);
+				str += e.advance();
+			}
+		}catch(e){
+
+		}
+		return str;
+	}
 	eat_word(e){
 		var str = '';
 		try{
@@ -241,6 +258,7 @@ class Read{
 			if(this.is_num(e)) return {"_type":"TC_NUM", "_where": this.where(e), "_datum": this.eat_number(e)};
 			if(this.is_string(e.peek())) return {"_type":"TC_STR", "_where": this.where(e), "_datum": this.eat_string(e)};
 			if(this.is_json(e.peek())) return {"_type":"TC_JSON", "_where": this.where(e), "_datum": this.eat_json(e)};
+			if(this.is_bool(e)) return {"_type":"TC_BOOL", "_where": this.where(e), "_datum": this.eat_bool(e)};
 			return {"_type":"TC_WORD", "_where": this.where(e), "_datum": this.eat_word(e)};
 		}catch(e){
 			return false;

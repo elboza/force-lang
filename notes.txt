@@ -27,8 +27,8 @@ j:stringify
 s:@
 s:!
 = < > <= >= 
-&& ||
-not
+&& ||        ********
+not          ********
 if
 while
 case of

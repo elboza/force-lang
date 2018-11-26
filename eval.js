@@ -38,6 +38,7 @@ class Eval{
 			if(e._type == 'TC_NUM') this.s.push(e);
 			if(e._type == 'TC_STR') this.s.push(e);
 			if(e._type == 'TC_JSON') this.s.push(e);
+			if(e._type == 'TC_BOOL') this.s.push(e);
 			if(e._type == 'TC_WORD'){
 				if(y=env.lookup(e._datum)){
 					switch(y._datum._type){

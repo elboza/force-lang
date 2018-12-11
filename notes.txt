@@ -1,11 +1,11 @@
 TODO
 
-n:+
+n:+          *******
 s:+
 a:+
-n:-
-n:*
-n:/
+n:-          *******
+n:*          *******
+n:/          *******
 +
 -
 *
@@ -29,9 +29,9 @@ s:!
 = < > <= >= 
 && ||        ********
 not          ********
-if
-while
-case of
+if           ********
+while        ********
+case of      ********
 required
 s:split
 s:join
@@ -42,12 +42,12 @@ m:keys
 m:values
 >r r> r@ r!
 ( func )
-dup
-swap
-drop
+dup         **********
+swap        **********
+drop        **********
 ndrop
 exit
-nbye
+nbye        **********
 .j  (print pretty json)
 .""
 .()

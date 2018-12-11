@@ -71,6 +71,7 @@ class NativeLib{
 		switch(x._type){
 			case 'TC_NUM':
 			case 'TC_STR':
+			case 'TC_BOOL':
 				log.info(x._datum);
 				break;
 			case 'TC_JSON':
@@ -91,6 +92,7 @@ class NativeLib{
 		switch(x._type){
 			case 'TC_NUM':
 			case 'TC_STR':
+			case 'TC_BOOL':
 				log.info(`{ ${x._type} ${x._datum} }`);
 				break;
 			case 'TC_JSON':
@@ -169,6 +171,95 @@ class NativeLib{
 		let b=env.get_bool_val(env.s.pop());
 		env.s.push(env.set_bool_val(a||b));
 	}
+	is_num_func(){
+		if(env.is_num(env.s.pop())){
+			env.s.push(env.true_obj());
+			return;
+		}
+		env.s.push(env.false_obj());
+	}
+	is_falsy_func(){
+		let x = env.s.pop();
+		if(x){
+			switch(x._type){
+				case 'TC_NUM':
+					if(x._datum==0) return env.s.push(env.true_obj()); else return env.s.push(env.false_obj());
+					break;
+				case 'TC_STR':
+					if(x._datum == '') return env.s.push(env.true_obj());
+					break;
+				case 'TC_BOOL':
+					if(env.is_false(x)) return env.s.push(env.true_obj());
+					break;
+				case 'TC_JLIST':
+				case 'TC_JOBJ':
+				default:
+					return env.s.push(env.false_obj());
+					break;
+			}
+		}
+		return env.s.push(env.true_obj());
+	}
+	dup_func(){
+		env.s.push(env.TOS());
+	}
+	swap_func(){
+		if(env.TOS() && env.TOS2()){
+			let x = env.s.pop();
+			let y = env.s.pop();
+			env.s.push(x);
+			env.s.push(y);
+			return;
+		}
+		log.info('not 2 elemets in the stack... aborting...');
+	}
+	drop_func(){
+		env.s.pop();
+	}
+	ndrop_func(){
+		
+	}
+	nbye_func(){
+		if(env.TOS()._type == 'TC_NUM'){
+			process.exit(env.s.pop()._datum);
+		}
+		log.info('TOS not a number... aborting');
+	}
+	over_func(){
+		env.s.push(env.s.look_at(1));
+	}
+	num_plus_func(){
+		if(env.TOS()._type == 'TC_NUM' && env.TOS2()._type == 'TC_NUM'){
+			env.s.push({_type: 'TC_NUM', _datum: env.s.pop()._datum + env.s.pop()._datum});
+			return;
+		}
+		log.info('no numbers on top 2 elements of the stack... aborting');
+	}
+	num_minus_func(){
+		if(env.TOS()._type == 'TC_NUM' && env.TOS2()._type == 'TC_NUM'){
+			let x = env.s.pop()._datum;
+			let y = env.s.pop()._datum;
+			env.s.push({_type: 'TC_NUM', _datum: y - x});
+			return;
+		}
+		log.info('no numbers on top 2 elements of the stack... aborting');
+	}
+	num_times_func(){
+		if(env.TOS()._type == 'TC_NUM' && env.TOS2()._type == 'TC_NUM'){
+			env.s.push({_type: 'TC_NUM', _datum: env.s.pop()._datum * env.s.pop()._datum});
+			return;
+		}
+		log.info('no numbers on top 2 elements of the stack... aborting');
+	}
+	num_div_func(){
+		if(env.TOS()._type == 'TC_NUM' && env.TOS2()._type == 'TC_NUM'){
+			let x = env.s.pop()._datum;
+			let y = env.s.pop()._datum;
+			env.s.push({_type: 'TC_NUM', _datum: y / x});
+			return;
+		}
+		log.info('no numbers on top 2 elements of the stack... aborting');
+	}
 	populate(){
 		env.set('pippo',{_type: 'TC_NATIVE_FUNC', _datum: this.test_func}, 'TC_WORD');
 		env.set('bye',{_type: 'TC_NATIVE_FUNC', _datum: this.bye_func}, 'TC_WORD');
@@ -184,6 +275,18 @@ class NativeLib{
 		env.set('not',{_type: 'TC_NATIVE_FUNC', _datum: this.not_func}, 'TC_WORD');
 		env.set('and',{_type: 'TC_NATIVE_FUNC', _datum: this.and_func}, 'TC_WORD');
 		env.set('or',{_type: 'TC_NATIVE_FUNC', _datum: this.or_func}, 'TC_WORD');
+		env.set('is_num',{_type: 'TC_NATIVE_FUNC', _datum: this.is_num_func}, 'TC_WORD');
+		env.set('is_falsy',{_type: 'TC_NATIVE_FUNC', _datum: this.is_falsy_func}, 'TC_WORD');
+		env.set('dup',{_type: 'TC_NATIVE_FUNC', _datum: this.dup_func}, 'TC_WORD');
+		env.set('swap',{_type: 'TC_NATIVE_FUNC', _datum: this.swap_func}, 'TC_WORD');
+		env.set('drop',{_type: 'TC_NATIVE_FUNC', _datum: this.drop_func}, 'TC_WORD');
+		env.set('ndrop',{_type: 'TC_NATIVE_FUNC', _datum: this.ndrop_func}, 'TC_WORD');
+		env.set('nbye',{_type: 'TC_NATIVE_FUNC', _datum: this.nbye_func}, 'TC_WORD');
+		env.set('over',{_type: 'TC_NATIVE_FUNC', _datum: this.over_func}, 'TC_WORD');
+		env.set('n:+',{_type: 'TC_NATIVE_FUNC', _datum: this.num_plus_func}, 'TC_WORD');
+		env.set('n:-',{_type: 'TC_NATIVE_FUNC', _datum: this.num_minus_func}, 'TC_WORD');
+		env.set('n:*',{_type: 'TC_NATIVE_FUNC', _datum: this.num_times_func}, 'TC_WORD');
+		env.set('n:/',{_type: 'TC_NATIVE_FUNC', _datum: this.num_div_func}, 'TC_WORD');
 	}
 };
 

@@ -58,7 +58,84 @@ class Eval{
 		}
 		//log.info({else_body});
 		//log.info({then_body});
-		this.eval_parsed(then_body);
+		if(env.is_true(env.s.pop())){
+			this.eval_parsed(then_body);
+		} else {
+			this.eval_parsed(else_body);
+		}
+		return list_copy;
+	}
+	eval_while(stream, list){
+		//log.info('while.:.');
+		var y;
+		var body = [];
+		var test_body = [];
+		var while_body = [];
+		var level=0;
+		var list_copy=list;
+		if(list){
+		// 	//var list_copy=JSON.parse(JSON.stringify(list));
+			// var list_copy=list;
+			while(y=list_copy.shift()){
+				if(y._datum=='begin') {level++;}
+				if(y._datum=='repeat') { if(level==0){while_body = body; break;}else{level--;}}
+				if(y._datum=='while') { if(level==0) {test_body = body; body = []; continue;}}
+				body.push(y);
+			}
+		} else {
+			while((y=read.read(stream))!=false){
+				if(y._datum=='begin') {level++;}
+				if(y._datum=='repeat') { if(level==0){while_body = body; break;}else{level--;}}
+				if(y._datum=='while') { if(level==0) {test_body = body; body = []; continue;}}
+				body.push(y);
+			}
+		}
+		log.info({test_body});
+		log.info({while_body});
+		while(true){
+			this.eval_parsed(test_body);
+			if(!env.is_true(env.s.pop())) break;
+			this.eval_parsed(while_body);
+		}
+		return list_copy;
+	}
+	eval_case(stream, list){
+		//log.info('case.:.');
+		var y;
+		var body = [];
+		var test_body = [];
+		var case_body = [];
+		var case_list = [];
+		var level=0;
+		var list_copy=list;
+		if(list){
+			while(y=list_copy.shift()){
+				if(y._datum=='case') {level++;}
+				if(y._datum=='endcase') { if(level==0){break;}else{level--;}}
+				if(y._datum=='of') { if(level==0) {test_body = body; body = []; continue;}}
+				if(y._datum=='endof') { if(level==0) {case_body = body; body = []; case_list.push({test_body, case_body});continue;}}
+				body.push(y);
+			}
+		} else {
+			while((y=read.read(stream))!=false){
+				if(y._datum=='case') {level++;}
+				if(y._datum=='endcase') { if(level==0){break;}else{level--;}}
+				if(y._datum=='of') { if(level==0) {test_body = body; body = []; continue;}}
+				if(y._datum=='endof') { if(level==0) {case_body = body; body = []; case_list.push({test_body, case_body});continue;}}
+				body.push(y);
+			}
+		}
+		//log.info({case_list});
+		let x = env.s.pop();
+		for(var item of case_list){
+			this.eval_parsed(item.test_body);
+			let y = env.s.pop();
+			if(env.is_true(y) || x._datum == y._datum){
+				log.info(item.case_body);
+				this.eval_parsed(item.case_body);
+				break;
+			}
+		}
 		return list_copy;
 	}
 	eval_parsed_step(e){
@@ -104,8 +181,16 @@ class Eval{
 		//for(var item of e){
 		while(item=list_copy.shift()){
 			if(item._datum == 'if'){
-					log.info('if.:.');
+					//log.info('if.:.');
 					list_copy=this.eval_if(null,list_copy);
+					continue;
+				}
+				if(item._datum == 'begin'){
+					list_copy=this.eval_while(null,list_copy);
+					continue;
+				}
+				if(item._datum == 'case'){
+					list_copy=this.eval_case(null,list_copy);
 					continue;
 				}
 			if(item._datum == ';' || item._datum == 'exit') break;
@@ -142,6 +227,14 @@ class Eval{
 				}
 				if(x._datum == 'if'){
 					this.eval_if(stream);
+					continue;
+				}
+				if(x._datum == 'begin'){
+					this.eval_while(stream);
+					continue;
+				}
+				if(x._datum == 'case'){
+					this.eval_case(stream);
 					continue;
 				}
 			}

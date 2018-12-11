@@ -27,15 +27,35 @@ class Env{
 		return this.s.look_at(1);
 	}
 	is_bool(e){
-		if(e._type=='TC_BOOL') return true;
+		if(e && e._type=='TC_BOOL') return true;
 		return false;
 	}
 	is_true(e){
-		if(e._type=='TC_BOOL' && e._datum=='T') return true;
+		if(e && e._type=='TC_BOOL' && e._datum=='T') return true;
 		return false;
 	}
 	is_false(e){
-		if(e._type=='TC_BOOL' && e._datum=='F') return true;
+		if(e && e._type=='TC_BOOL' && e._datum=='F') return true;
+		return false;
+	}
+	is_num(e){
+		if(e && e._type=='TC_NUM') return true;
+		return false;
+	}
+	is_string(e){
+		if(e && e._type=='TC_STR') return true;
+		return false;
+	}
+	is_json(e){
+		if(e && e._type=='TC_JSON') return true;
+		return false;
+	}
+	is_obj(e){
+		if(e && e._type=='TC_JOBJ') return true;
+		return false;
+	}
+	is_list(e){
+		if(e && e._type=='TC_JLIST') return true;
 		return false;
 	}
 	true_obj(){

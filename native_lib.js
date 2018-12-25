@@ -1,5 +1,7 @@
 const log = require('bunny-logger');
 const env = require('./env');
+const err = require('./error');
+const eval = require('./eval');
 
 class NativeLib{
 	constructor(){
@@ -80,6 +82,9 @@ class NativeLib{
 			case 'TC_VAR':
 				log.info(x._name);
 				break;
+			case 'TC_ERR':
+				log.info(`ERR: ${x._datum.msg}`);
+				break;
 			default:
 				log.info(`unknown: { ${x._type} ${x._datum} }`);
 				break;
@@ -101,6 +106,9 @@ class NativeLib{
 			case 'TC_VAR':
 				log.info(`{ ${x._type} ${x._name} ${x._datum._datum} }`);
 				break;
+			case 'TC_ERR':
+				log.info(`ERR: ${x._datum.msg}`);
+				break;
 			default:
 				log.info(`unknown: { ${x._type} ${x._datum} }`);
 				break;
@@ -109,7 +117,10 @@ class NativeLib{
 	assign_var_func(){
 		const varx = env.s.pop();
 		const val = env.s.pop();
-		if(!varx || !val) return;
+		if(!varx || !val) {
+			env.s.push(err.throw('no items on top 2 elements of the stack... aborting'));
+			return;
+		}
 		//log.info(varx);
 		//log.info(val);
 		switch(val._type){
@@ -125,7 +136,10 @@ class NativeLib{
 	}
 	read_var_func(){
 		const varx = env.s.pop();
-		if(!varx) return;
+		if(!varx) {
+			env.s.push(err.throw('no element on top of the stack... aborting'));
+			return;
+		}
 		//log.info(varx);
 		switch(varx._datum._type){
 			case'TC_NUM':
@@ -139,7 +153,7 @@ class NativeLib{
 	}
 	not_func(){
 		if(!env.is_bool(env.TOS())){
-			log.info('TOS is not a bool. aborting operation...');
+			env.s.push(err.throw('TOS is not a bool. aborting operation...'));
 			return;
 		}
 		let x = env.get_bool_val(env.s.pop());
@@ -147,11 +161,11 @@ class NativeLib{
 	}
 	and_func(){
 		if(!env.is_bool(env.TOS())){
-			log.info('TOS is not a bool. aborting operation...');
+			env.s.push(err.throw('TOS is not a bool. aborting operation...'));
 			return;
 		}
 		if(!env.is_bool(env.TOS2())){
-			log.info('TOS2 is not a bool. aborting operation...');
+			env.s.push(err.throw('TOS" is not a bool. aborting operation...'));
 			return;
 		}
 		let a=env.get_bool_val(env.s.pop());
@@ -160,11 +174,11 @@ class NativeLib{
 	}
 	or_func(){
 		if(!env.is_bool(env.TOS())){
-			log.info('TOS is not a bool. aborting operation...');
+			env.s.push(err.throw('TOS is not a bool. aborting operation...'));
 			return;
 		}
 		if(!env.is_bool(env.TOS2())){
-			log.info('TOS2 is not a bool. aborting operation...');
+			env.s.push(err.throw('TOS2 is not a bool. aborting operation...'));
 			return;
 		}
 		let a=env.get_bool_val(env.s.pop());
@@ -211,7 +225,7 @@ class NativeLib{
 			env.s.push(y);
 			return;
 		}
-		log.info('not 2 elemets in the stack... aborting...');
+		env.s.push(err.throw('not 2 elemets in the stack... aborting...'));
 	}
 	drop_func(){
 		env.s.pop();
@@ -220,45 +234,57 @@ class NativeLib{
 		
 	}
 	nbye_func(){
-		if(env.TOS()._type == 'TC_NUM'){
+		if(env.TOS() && env.TOS()._type == 'TC_NUM'){
 			process.exit(env.s.pop()._datum);
 		}
-		log.info('TOS not a number... aborting');
+		env.s.push(err.throw('TOS not a number... aborting'));
 	}
 	over_func(){
 		env.s.push(env.s.look_at(1));
 	}
 	num_plus_func(){
-		if(env.TOS()._type == 'TC_NUM' && env.TOS2()._type == 'TC_NUM'){
+		if(env.TOS() && env.TOS()._type == 'TC_NUM' && env.TOS2() && env.TOS2()._type == 'TC_NUM'){
 			env.s.push({_type: 'TC_NUM', _datum: env.s.pop()._datum + env.s.pop()._datum});
 			return;
 		}
-		log.info('no numbers on top 2 elements of the stack... aborting');
+		env.s.push(err.throw('no numbers on top 2 elements of the stack... aborting'));
 	}
 	num_minus_func(){
-		if(env.TOS()._type == 'TC_NUM' && env.TOS2()._type == 'TC_NUM'){
+		if(env.TOS() && env.TOS()._type == 'TC_NUM' && env.TOS2() && env.TOS2()._type == 'TC_NUM'){
 			let x = env.s.pop()._datum;
 			let y = env.s.pop()._datum;
 			env.s.push({_type: 'TC_NUM', _datum: y - x});
 			return;
 		}
-		log.info('no numbers on top 2 elements of the stack... aborting');
+		env.s.push(err.throw('no numbers on top 2 elements of the stack... aborting'));
 	}
 	num_times_func(){
-		if(env.TOS()._type == 'TC_NUM' && env.TOS2()._type == 'TC_NUM'){
+		if(env.TOS() && env.TOS()._type == 'TC_NUM' && env.TOS2() && env.TOS2()._type == 'TC_NUM'){
 			env.s.push({_type: 'TC_NUM', _datum: env.s.pop()._datum * env.s.pop()._datum});
 			return;
 		}
-		log.info('no numbers on top 2 elements of the stack... aborting');
+		env.s.push(err.throw('no numbers on top 2 elements of the stack... aborting'));
 	}
 	num_div_func(){
-		if(env.TOS()._type == 'TC_NUM' && env.TOS2()._type == 'TC_NUM'){
+		if(env.TOS() && env.TOS()._type == 'TC_NUM' && env.TOS2() && env.TOS2()._type == 'TC_NUM'){
 			let x = env.s.pop()._datum;
 			let y = env.s.pop()._datum;
 			env.s.push({_type: 'TC_NUM', _datum: y / x});
 			return;
 		}
-		log.info('no numbers on top 2 elements of the stack... aborting');
+		env.s.push(err.throw('no numbers on top 2 elements of the stack... aborting'));
+	}
+	plus_func(){
+		eval.eval('f+');
+	}
+	handle_repl_func(){
+		err.handle_repl();
+	}
+	handle_standard_func(){
+		err.handle_standard();
+	}
+	populate_repl(){
+		env.set('handle',{_type: 'TC_NATIVE_FUNC', _datum: this.handle_repl_func}, 'TC_WORD');
 	}
 	populate(){
 		env.set('pippo',{_type: 'TC_NATIVE_FUNC', _datum: this.test_func}, 'TC_WORD');
@@ -287,6 +313,8 @@ class NativeLib{
 		env.set('n:-',{_type: 'TC_NATIVE_FUNC', _datum: this.num_minus_func}, 'TC_WORD');
 		env.set('n:*',{_type: 'TC_NATIVE_FUNC', _datum: this.num_times_func}, 'TC_WORD');
 		env.set('n:/',{_type: 'TC_NATIVE_FUNC', _datum: this.num_div_func}, 'TC_WORD');
+		env.set('+',{_type: 'TC_NATIVE_FUNC', _datum: this.plus_func}, 'TC_WORD');
+		env.set('handle',{_type: 'TC_NATIVE_FUNC', _datum: this.handle_standard_func}, 'TC_WORD');
 	}
 };
 

@@ -18,7 +18,7 @@
 
 : ddrop
 	drop drop ;
-: n+
+: f+
 	dup
 	case
 	dup is_num of n:+ endof

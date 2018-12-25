@@ -2,8 +2,9 @@ const log = require('bunny-logger');
 var TokenStream = require('./token-stream');
 const read = require('./read');
 const env = require('./env');
-const NativeLib = require('./native_lib');
+//const NativeLib = require('./native_lib');
 const loadfile = require('./load-file');
+const err = require('./error');
 
 
 class Eval{
@@ -18,6 +19,31 @@ class Eval{
 	async load_lib(){
 		var x = await loadfile.load(__dirname + '/lib.j');
 		this.eval(x);
+	}
+
+	see_func(func_name){
+		var x=env.lookup(func_name);
+		if(!x){
+			log.info('no word found...');
+			return;
+		}
+		switch(x._datum._type){
+			case 'TC_NATIVE_FUNC':
+				log.info(`: ${x._name}`);
+				log.info('<native func> ;');
+				break;
+			case 'TC_COMP_FUNC':
+				log.info(`: ${x._name}`);
+				process.stdout.write(`  `);
+				for(var n of x._datum._datum){
+					process.stdout.write(`${n._datum} `);
+				}
+				log.info('');
+				break;
+			default:
+				log.info('not a word...');
+				break;
+		}
 	}
 
 	set_mode(x){
@@ -90,8 +116,8 @@ class Eval{
 				body.push(y);
 			}
 		}
-		log.info({test_body});
-		log.info({while_body});
+		//log.info({test_body});
+		//log.info({while_body});
 		while(true){
 			this.eval_parsed(test_body);
 			if(!env.is_true(env.s.pop())) break;
@@ -131,7 +157,7 @@ class Eval{
 			this.eval_parsed(item.test_body);
 			let y = env.s.pop();
 			if(env.is_true(y) || x._datum == y._datum){
-				log.info(item.case_body);
+				//log.info(item.case_body);//????
 				this.eval_parsed(item.case_body);
 				break;
 			}
@@ -161,10 +187,10 @@ class Eval{
 							break;
 					}
 				}else{
-					log.error(`word not found ${e._datum}`);
-					log.error(this.where_to_str(e._where));
+					env.s.push(err.throw(`word not found ${e.datum} ${this.where_to_str(e._where)}`));
 				}	
 			}
+			if(err.require_handle()) this.eval('handle');;
 		}
 		if(this.mode == 'compile'){
 			if(e._type == 'TC_WORD'){
@@ -222,7 +248,7 @@ class Eval{
 				}
 				if(x._datum == 'see'){
 					var func_name = read.read(stream);
-					NativeLib.see_func(func_name._datum);
+					this.see_func(func_name._datum);
 					continue;
 				}
 				if(x._datum == 'if'){

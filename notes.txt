@@ -6,17 +6,17 @@ a:+          ********
 n:-          *******
 n:*          *******
 n:/          *******
-+ f+         *******?????
++ f+         *******
 -            ******* 
 *            ******* 
 /            ********
-included
-a:@
-a:!
-m:@
-m:!
+included     *******
+a:@          *******
+a:!          *******
+m:@          *******
+m:!          *******
 a:each
-a:length
+a:length     *******
 f:slurp
 net:get
 net:post
@@ -36,10 +36,10 @@ required
 s:split
 s:join
 a:join
-a:push
-a:pop
-m:keys
-m:values
+a:push       *********
+a:pop        ********* 
+m:keys       ********* 
+m:values     *********
 >r r> r@ r!
 ( func )
 dup         **********

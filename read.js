@@ -62,9 +62,10 @@ class Read{
 		return (e === '{' || e === '[')? true : false ;
 	}
 	eat_line_comment(e){
-		while(e.peek()!='\n' && !this.is_eof(e.peek())){
+		while(e.peek()!='\n' && e.peek()!='\r' && !this.is_eof(e.peek())){
 			e.advance();
 		}
+		this.eat_whitespaces(e);
 	}
 	eat_comments(e){
 		if(e.peek()=='#' && e.lookahead(1)=='!'){

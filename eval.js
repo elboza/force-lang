@@ -154,6 +154,7 @@ class Eval{
 		//log.info({case_list});
 		let x = env.s.pop();
 		for(var item of case_list){
+			//log.info(item.test_body);
 			this.eval_parsed(item.test_body);
 			let y = env.s.pop();
 			if(env.is_true(y) || x._datum == y._datum){
@@ -190,7 +191,7 @@ class Eval{
 					env.s.push(err.throw(`word not found ${e.datum} ${this.where_to_str(e._where)}`));
 				}	
 			}
-			if(err.require_handle()) this.eval('handle');;
+			if(err.require_handle(` ${e.datum} ${this.where_to_str(e._where)}`)) this.eval('handle');;
 		}
 		if(this.mode == 'compile'){
 			if(e._type == 'TC_WORD'){

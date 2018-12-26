@@ -2,6 +2,7 @@ const log = require('bunny-logger');
 const env = require('./env');
 const err = require('./error');
 const eval = require('./eval');
+const loadfile = require('./load-file');
 
 class NativeLib{
 	constructor(){
@@ -198,6 +199,20 @@ class NativeLib{
 		}
 		env.s.push(env.false_obj());
 	}
+	is_string_func(){
+		if(env.is_string(env.s.pop())){
+			env.s.push(env.true_obj());
+			return;
+		}
+		env.s.push(env.false_obj());
+	}
+	is_list_func(){
+		if(env.is_list(env.s.pop())){
+			env.s.push(env.true_obj());
+			return;
+		}
+		env.s.push(env.false_obj());
+	}
 	is_falsy_func(){
 		let x = env.s.pop();
 		if(x){
@@ -315,6 +330,116 @@ class NativeLib{
 		}
 		env.s.push(err.throw("invalid arguments type"));
 	}
+	array_at_func(){
+		if(env.is_num(env.TOS()) && env.is_list(env.TOS2())){
+			var index=env.s.pop()._datum;
+			var arr=env.s.pop()._datum;
+			if(index<0) index=arr.length+index;
+			if(index>=arr.length || index<0){
+				env.s.push(err.throw("invalid index bound"));
+				return;
+			}
+			const value=arr[index];
+			const xval=env.adj_bool_val(value);
+			env.s.push({"_type":env.guess_type(value), "_datum":xval});
+			return;
+		}
+		env.s.push(err.throw("invalid arguments type"));
+	}
+	array_set_at_func(){
+		if(env.TOS() && env.is_num(env.TOS2()) && env.is_list(env.s.look_at(2))){
+			var value=env.s.pop()._datum;
+			var index=env.s.pop()._datum;
+			var arr=env.s.pop()._datum;
+			if(index<0) index=arr.length+index;
+			if(index>=arr.length || index<0){
+				env.s.push(err.throw("invalid index bound"));
+				return;
+			}
+			arr[index]=value;
+			env.s.push({"_type":"TC_JSON", "_datum":arr});
+			return;
+		}
+		env.s.push(err.throw("invalid arguments type"));
+	}
+	object_at_func(){
+		if(env.is_string(env.TOS()) && env.is_obj(env.TOS2())){
+			var key=env.s.pop()._datum;
+			var obj=env.s.pop()._datum;
+			var value=obj[key];
+			if(value){
+				const xval=env.adj_bool_val(value);
+				env.s.push({"_type":env.guess_type(value), "_datum":xval});
+				return;
+			}
+			env.s.push(err.throw("invalid object key"));
+			return;
+		}
+		env.s.push(err.throw("invalid arguments type"));
+	}
+	object_set_at_func(){
+		if(env.TOS() && env.is_string(env.TOS2()) && env.is_obj(env.s.look_at(2))){
+			var value=env.s.pop()._datum;
+			var key=env.s.pop()._datum;
+			var obj=env.s.pop()._datum;
+			obj[key]=value;
+			env.s.push({"_type":'TC_JSON', "_datum":obj});
+			return;
+		}
+		env.s.push(err.throw("invalid arguments type"));
+	}
+	array_length_func(){
+		if(env.is_list(env.TOS())){
+			var x=env.s.pop()._datum.length;
+			env.s.push({"_type":"TC_NUM","_datum":x});
+			return;
+		}
+		env.s.push(err.throw("invalid arguments type. TOS not a list"));
+	}
+	array_push_func(){
+		if(env.is_list(env.TOS2()) && env.TOS()){
+			var value=env.s.pop()._datum;
+			var arr=env.s.pop()._datum;
+			arr.push(value);
+			env.s.push({"_type":"TC_JSON","_datum":arr});
+			return;
+		}
+		env.s.push(err.throw("invalid arguments type."));
+	}
+	array_pop_func(){
+		if(env.is_list(env.TOS())){
+			var value=env.s.pop()._datum.pop();
+			const xval=env.adj_bool_val(value);
+			env.s.push({"_type":env.guess_type(value), "_datum":xval});
+			return;
+		}
+		env.s.push(err.throw("invalid arguments type. TOS not a list"));
+	}
+	object_keys_func(){
+		if(env.is_obj(env.TOS())){
+			var x=env.s.pop()._datum;
+			env.s.push({"_type":"TC_JSON","_datum":Object.keys(x)});
+			return;
+		}
+		env.s.push(err.throw("invalid arguments type."));
+	}
+	object_values_func(){
+		if(env.is_obj(env.TOS())){
+			var x=env.s.pop()._datum;
+			env.s.push({"_type":"TC_JSON","_datum":Object.values(x)});
+			return;
+		}
+		env.s.push(err.throw("invalid arguments type."));
+	}
+	async included_func(){
+		if(env.is_string(env.TOS())){
+			const arg= env.s.pop();
+			var x = await loadfile.load(arg._datum);
+			eval.eval(x);
+			return;
+		}
+		env.s.push(err.throw("invalid arguments type"));
+	}
 	throw_func(){
 		if(env.TOS() && env.TOS()._type == 'TC_STR'){
 			env.s.push(err.throw(env.s.pop()._datum));
@@ -352,6 +477,8 @@ class NativeLib{
 		env.set('and',{_type: 'TC_NATIVE_FUNC', _datum: this.and_func}, 'TC_WORD');
 		env.set('or',{_type: 'TC_NATIVE_FUNC', _datum: this.or_func}, 'TC_WORD');
 		env.set('is_num',{_type: 'TC_NATIVE_FUNC', _datum: this.is_num_func}, 'TC_WORD');
+		env.set('is_string',{_type: 'TC_NATIVE_FUNC', _datum: this.is_string_func}, 'TC_WORD');
+		env.set('is_list',{_type: 'TC_NATIVE_FUNC', _datum: this.is_list_func}, 'TC_WORD');
 		env.set('is_falsy',{_type: 'TC_NATIVE_FUNC', _datum: this.is_falsy_func}, 'TC_WORD');
 		env.set('dup',{_type: 'TC_NATIVE_FUNC', _datum: this.dup_func}, 'TC_WORD');
 		env.set('swap',{_type: 'TC_NATIVE_FUNC', _datum: this.swap_func}, 'TC_WORD');
@@ -372,6 +499,16 @@ class NativeLib{
 		env.set('throw',{_type: 'TC_NATIVE_FUNC', _datum: this.throw_func}, 'TC_WORD');
 		env.set('s:+',{_type: 'TC_NATIVE_FUNC', _datum: this.string_plus_func}, 'TC_WORD');
 		env.set('a:+',{_type: 'TC_NATIVE_FUNC', _datum: this.array_plus_func}, 'TC_WORD');
+		env.set('included',{_type: 'TC_NATIVE_FUNC', _datum: this.included_func}, 'TC_WORD');
+		env.set('a:@',{_type: 'TC_NATIVE_FUNC', _datum: this.array_at_func}, 'TC_WORD');
+		env.set('a:!',{_type: 'TC_NATIVE_FUNC', _datum: this.array_set_at_func}, 'TC_WORD');
+		env.set('m:@',{_type: 'TC_NATIVE_FUNC', _datum: this.object_at_func}, 'TC_WORD');
+		env.set('m:!',{_type: 'TC_NATIVE_FUNC', _datum: this.object_set_at_func}, 'TC_WORD');
+		env.set('a:length',{_type: 'TC_NATIVE_FUNC', _datum: this.array_length_func}, 'TC_WORD');
+		env.set('a:push',{_type: 'TC_NATIVE_FUNC', _datum: this.array_push_func}, 'TC_WORD');
+		env.set('a:pop',{_type: 'TC_NATIVE_FUNC', _datum: this.array_pop_func}, 'TC_WORD');
+		env.set('m:keys',{_type: 'TC_NATIVE_FUNC', _datum: this.object_keys_func}, 'TC_WORD');
+		env.set('m:values',{_type: 'TC_NATIVE_FUNC', _datum: this.object_values_func}, 'TC_WORD');
 	}
 };
 

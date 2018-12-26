@@ -22,6 +22,7 @@
 	dup
 	case
 	dup is_string of s:+ endof
+	over is_string of s:+ endof
 	dup is_list of a:+ endof
 	dup is_num of n:+ endof
 	endcase ;

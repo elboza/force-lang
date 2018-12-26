@@ -15,8 +15,11 @@ class Error {
 			"_datum": {"msg":msg,"code":code}
 		}
 	}
-	require_handle(){
+	require_handle(info_str){
 		if(env.TOS() && env.TOS()._type == 'TC_ERR'){
+			var x=env.s.pop();
+			x._datum._msg += info_str;
+			env.s.push(x);
 			return true;
 		}
 		return false;

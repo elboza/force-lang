@@ -64,6 +64,30 @@ class Env{
 	false_obj(){
 		return {"_type":"TC_BOOL","_datum": 'F'};
 	}
+	adj_bool_val(e){
+		if(e===true) return 'T';
+		if(e===false) return 'F';
+		return e;
+	}
+	guess_type(e){
+		switch(typeof(e)){
+			case 'number':
+				return 'TC_NUM';
+				break;
+			case 'string':
+				return 'TC_STR';
+				break;
+			case 'object':
+				return 'TC_JSON';
+				break;
+			case 'boolean':
+				return 'TC_BOOL';
+				break;
+			default:
+				return 'TC_UNDEF';
+				break;
+		}
+	}
 	get_bool_val(e){
 		if(this.is_bool(e)){
 			if(this.is_true(e)) return true;

@@ -7,6 +7,12 @@ class NativeLib{
 	constructor(){
 		this.populate();
 	}
+	make_func_obj(func_name){
+		return {
+			"_type":"TC_COMP_FUNC",
+			"_datum":func_name
+		}
+	}
 	test_func(){
 		log.info('...hai detto pippo?');
 	}
@@ -277,6 +283,50 @@ class NativeLib{
 	plus_func(){
 		eval.eval('f+');
 	}
+	minus_func(){
+		eval.eval('n:-');
+	}
+	times_func(){
+		eval.eval('n:*');
+	}
+	division_func(){
+		eval.eval('n:/');
+	}
+	module_func(){
+		eval.eval('n:%');
+	}
+	string_plus_func(){
+		if(env.is_string(env.TOS()) || env.is_string(env.TOS2())){
+			if(env.is_num(env.TOS()) || env.is_num(env.TOS2()) || env.is_string(env.TOS()) || env.is_string(env.TOS2())){
+				const x= env.s.pop();
+				const y= env.s.pop();
+				env.s.push({"_type":"TC_STR","_datum":y._datum+x._datum});
+				return;
+			}
+		}
+		env.s.push(err.throw("invalid arguments type"));
+	}
+	array_plus_func(){
+		if(env.is_list(env.TOS()) || env.is_list(env.TOS2())){
+			const x= env.s.pop();
+			const y= env.s.pop();
+			env.s.push({"_type":"TC_JSON","_datum":y._datum.concat(x._datum)});
+			return;
+		}
+		env.s.push(err.throw("invalid arguments type"));
+	}
+	throw_func(){
+		if(env.TOS() && env.TOS()._type == 'TC_STR'){
+			env.s.push(err.throw(env.s.pop()._datum));
+			return;
+		}
+		if(env.TOS() && env.TOS()._type == 'TC_JSON'){
+			const err_arg = env.s.pop();
+			env.s.push(err.throw(err_arg._datum.msg, err_arg._datum.code));
+			return;
+		}
+		env.s.push(err.throw('invalid throw argument in TOS'));
+	}
 	handle_repl_func(){
 		err.handle_repl();
 	}
@@ -314,7 +364,14 @@ class NativeLib{
 		env.set('n:*',{_type: 'TC_NATIVE_FUNC', _datum: this.num_times_func}, 'TC_WORD');
 		env.set('n:/',{_type: 'TC_NATIVE_FUNC', _datum: this.num_div_func}, 'TC_WORD');
 		env.set('+',{_type: 'TC_NATIVE_FUNC', _datum: this.plus_func}, 'TC_WORD');
+		env.set('-',{_type: 'TC_NATIVE_FUNC', _datum: this.minus_func}, 'TC_WORD');
+		env.set('*',{_type: 'TC_NATIVE_FUNC', _datum: this.times_func}, 'TC_WORD');
+		env.set('/',{_type: 'TC_NATIVE_FUNC', _datum: this.division_func}, 'TC_WORD');
+		env.set('%',{_type: 'TC_NATIVE_FUNC', _datum: this.module_func}, 'TC_WORD');
 		env.set('handle',{_type: 'TC_NATIVE_FUNC', _datum: this.handle_standard_func}, 'TC_WORD');
+		env.set('throw',{_type: 'TC_NATIVE_FUNC', _datum: this.throw_func}, 'TC_WORD');
+		env.set('s:+',{_type: 'TC_NATIVE_FUNC', _datum: this.string_plus_func}, 'TC_WORD');
+		env.set('a:+',{_type: 'TC_NATIVE_FUNC', _datum: this.array_plus_func}, 'TC_WORD');
 	}
 };
 

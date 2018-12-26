@@ -15,9 +15,9 @@ class Read{
 		return ws.includes(e);
 	}
 	is_digit(e){
-		if(this.is_eof(e)) return false;
+		if(this.is_delimiter(e)) return false;
 		const num = e - '0';
-		return e>=0 && e<=9 ? true : false ;
+		return num>=0 && num<=9 ? true : false ;
 	}
 	is_hex_digit(e){
 		if(this.is_eof(e)) return false;

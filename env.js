@@ -51,11 +51,11 @@ class Env{
 		return false;
 	}
 	is_obj(e){
-		if(e && e._type=='TC_JOBJ') return true;
+		if(e && e._type=='TC_JSON' && !this.is_list(e)) return true;
 		return false;
 	}
 	is_list(e){
-		if(e && e._type=='TC_JLIST') return true;
+		if(e && e._type=='TC_JSON' && e._datum instanceof Array) return true;
 		return false;
 	}
 	true_obj(){

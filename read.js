@@ -235,6 +235,14 @@ class Read{
 			this.eat_comments(e);
 			var x=e.advance();
 			//if(x==='"' || x==="'") instring=instring++ mod 2
+			if(x==='"' || x==="'"){
+				let closing_str=x;
+				let c,sstr='';
+				while((c=e.advance()) != closing_str){
+					sstr +=c;
+				}
+				x= `${closing_str}${sstr}${closing_str}`;
+			}
 			if(x===opening_char) level++;
 			if(x===closing_char) level--;
 			str += x;

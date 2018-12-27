@@ -1,4 +1,5 @@
 const log = require('bunny-logger');
+const request = require('request-promise-native');
 const env = require('./env');
 const err = require('./error');
 const eval = require('./eval');
@@ -588,11 +589,32 @@ class NativeLib{
 		}
 		env.s.push(err.throw("invalid arguments type."));
 	}
+	async net_request_func(){
+		if(env.is_obj(env.TOS())){
+			try{
+				let resp= await request(env.s.pop()._datum);
+				env.s.push({"_type":"TC_STR","_datum":resp}); 
+			}catch(e){
+				env.s.push(err.throw(e));
+			}
+			return;
+		}
+		env.s.push(err.throw("invalid arguments type."));
+	}
 	async included_func(){
 		if(env.is_string(env.TOS())){
 			const arg= env.s.pop();
 			var x = await loadfile.load(arg._datum);
 			eval.eval(x);
+			return;
+		}
+		env.s.push(err.throw("invalid arguments type"));
+	}
+	async file_slurp_func(){
+		if(env.is_string(env.TOS())){
+			const arg= env.s.pop();
+			var x = await loadfile.load(arg._datum);
+			env.s.push({"_type":"TC_STR","_datum":x});
 			return;
 		}
 		env.s.push(err.throw("invalid arguments type"));
@@ -679,6 +701,8 @@ class NativeLib{
 		env.set('>',{_type: 'TC_NATIVE_FUNC', _datum: this.num_major_func}, 'TC_WORD');
 		env.set('<=',{_type: 'TC_NATIVE_FUNC', _datum: this.num_min_eq_func}, 'TC_WORD');
 		env.set('>=',{_type: 'TC_NATIVE_FUNC', _datum: this.num_maj_eq_func}, 'TC_WORD');
+		env.set('f:slurp',{_type: 'TC_NATIVE_FUNC', _datum: this.file_slurp_func}, 'TC_WORD');
+		env.set('net:request',{_type: 'TC_NATIVE_FUNC', _datum: this.net_request_func}, 'TC_WORD');
 	}
 };
 

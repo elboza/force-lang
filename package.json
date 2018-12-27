@@ -11,6 +11,8 @@
   "dependencies": {
     "bunny-logger": "0.0.2",
     "commander": "^2.19.0",
-    "json5": "^2.1.0"
+    "json5": "^2.1.0",
+    "request": "^2.88.0",
+    "request-promise-native": "^1.0.5"
   }
 }

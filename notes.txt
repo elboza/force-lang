@@ -17,7 +17,8 @@ m:@          *******
 m:!          *******
 a:each
 a:length     *******
-f:slurp
+f:slurp      *******
+net:request  *******
 net:get
 net:post
 j:encode     ********

@@ -18,6 +18,7 @@
 
 : ddrop
 	drop drop ;
+
 : f+
 	dup
 	case
@@ -26,3 +27,12 @@
 	dup is_list of a:+ endof
 	dup is_num of n:+ endof
 	endcase ;
+
+: a:join
+	s:join ;
+
+: j:encode
+	j:stringify ;
+
+: j:decode
+	j:parse ;

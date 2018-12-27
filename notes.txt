@@ -9,7 +9,7 @@ n:/          *******
 + f+         *******
 -            ******* 
 *            ******* 
-/            ********
+/            *******
 included     *******
 a:@          *******
 a:!          *******
@@ -20,22 +20,22 @@ a:length     *******
 f:slurp
 net:get
 net:post
-j:encode
-j:decode
-j:parse
-j:stringify
-s:@
-s:!
-= < > <= >= 
+j:encode     ********
+j:decode     ******** 
+j:parse      ********
+j:stringify  ********
+s:@          ********
+s:!          ********
+= < > <= >=  ********
 && ||        ********
 not          ********
 if           ********
 while        ********
 case of      ********
 required
-s:split
-s:join
-a:join
+s:split      ********
+s:join       ********
+a:join       ********
 a:push       *********
 a:pop        ********* 
 m:keys       ********* 
@@ -48,6 +48,7 @@ drop        **********
 ndrop
 exit
 nbye        **********
+delete
 .j  (print pretty json)
 .""
 .()

@@ -431,6 +431,163 @@ class NativeLib{
 		}
 		env.s.push(err.throw("invalid arguments type."));
 	}
+	string_split_func(){
+		if(env.TOS() && env.is_string(env.TOS2())){
+			var x=env.s.pop();
+			var y=env.s.pop()._datum;
+			var z;
+			if(env.is_string(x)){
+				z=y.split(x._datum);
+			}
+			if(env.is_obj(x)){
+				z=y.split(x._datum.separator, x._datum.limit);
+			}
+			if(z){
+				env.s.push({"_type":"TC_JSON","_datum":z});
+				return;
+			}
+		}
+		env.s.push(err.throw("invalid arguments type."));
+	}
+	string_join_func(){
+		if(env.is_string(env.TOS()) && env.is_list(env.TOS2())){
+			var separator=env.s.pop()._datum;
+			var list=env.s.pop()._datum;
+			env.s.push({"_type":"TC_STR","_datum":list.join(separator)});
+			return;
+		}
+		env.s.push(err.throw("invalid arguments type."));
+	}
+	json_stringify_func(){
+		if(env.is_json(env.TOS())){
+			try{
+			env.s.push({"_type":"TC_STR","_datum":JSON.stringify(env.s.pop()._datum)});
+			}catch(e){
+				env.s.push(err.throw(e));
+			}
+			return;
+		}
+		env.s.push(err.throw("invalid arguments type."));
+	}
+	json_parse_func(){
+		if(env.is_string(env.TOS())){
+			try{
+			env.s.push({"_type":"TC_JSON","_datum":JSON.parse(env.s.pop()._datum)});
+			}catch(e){
+				env.s.push(err.throw(e));
+			}
+			return;
+		}
+		env.s.push(err.throw("invalid arguments type."));
+	}
+	string_at_func(){
+		if(env.is_num(env.TOS()) && env.is_string(env.TOS2())){
+			try{
+				var index=env.s.pop()._datum;
+				var str=env.s.pop()._datum;
+				if(index<0) index=str.length+index;
+				env.s.push({"_type":"TC_STR","_datum":str[index]});
+			}catch(e){
+				env.s.push(err.throw(e));
+			}
+			return;
+		}
+		env.s.push(err.throw("invalid arguments type."));
+	}
+	string_set_at_func(){
+		if(env.is_string(env.TOS()) && env.is_num(env.TOS2()) && env.is_string(env.s.look_at(2))){
+			try{
+				var replacement=env.s.pop()._datum;
+				var index=env.s.pop()._datum;
+				var str=env.s.pop()._datum;
+				if(index<0) index=str.length+index;
+				var result=str.substr(0, index) + replacement+ str.substr(index + replacement.length);
+				env.s.push({"_type":"TC_STR","_datum":result});
+			}catch(e){
+				env.s.push(err.throw(e));
+			}
+			return;
+		}
+		env.s.push(err.throw("invalid arguments type."));
+	}
+	equal_func(){
+		if(env.TOS() && env.TOS2()){
+			try{
+				var x=env.s.pop()._datum;
+				var y=env.s.pop()._datum;
+				env.s.push({"_type":"TC_BOOL","_datum":y===x ? 'T' : 'F'}); 
+			}catch(e){
+				env.s.push(err.throw(e));
+			}
+			return;
+		}
+		env.s.push(err.throw("invalid arguments type."));
+	}
+	eq_func(){
+		if(env.TOS() && env.TOS2()){
+			try{
+				var x=env.s.pop()._datum;
+				var y=env.s.pop()._datum;
+				env.s.push({"_type":"TC_BOOL","_datum":y==x ? 'T' : 'F'}); 
+			}catch(e){
+				env.s.push(err.throw(e));
+			}
+			return;
+		}
+		env.s.push(err.throw("invalid arguments type."));
+	}
+	num_minor_func(){
+		if(env.is_num(env.TOS()) && env.is_num(env.TOS2())){
+			try{
+				var x=env.s.pop()._datum;
+				var y=env.s.pop()._datum;
+				env.s.push({"_type":"TC_BOOL","_datum":y<x ? 'T' : 'F'}); 
+			}catch(e){
+				env.s.push(err.throw(e));
+			}
+			return;
+		}
+		env.s.push(err.throw("invalid arguments type."));
+	}
+	num_major_func(){
+		if(env.is_num(env.TOS()) && env.is_num(env.TOS2())){
+			try{
+				var x=env.s.pop()._datum;
+				var y=env.s.pop()._datum;
+				env.s.push({"_type":"TC_BOOL","_datum":y>x ? 'T' : 'F'}); 
+			}catch(e){
+				env.s.push(err.throw(e));
+			}
+			return;
+		}
+		env.s.push(err.throw("invalid arguments type."));
+	}
+	num_min_eq_func(){
+		if(env.is_num(env.TOS()) && env.is_num(env.TOS2())){
+			try{
+				var x=env.s.pop()._datum;
+				var y=env.s.pop()._datum;
+				env.s.push({"_type":"TC_BOOL","_datum":y<=x ? 'T' : 'F'}); 
+			}catch(e){
+				env.s.push(err.throw(e));
+			}
+			return;
+		}
+		env.s.push(err.throw("invalid arguments type."));
+	}
+	num_maj_eq_func(){
+		if(env.is_num(env.TOS()) && env.is_num(env.TOS2())){
+			try{
+				var x=env.s.pop()._datum;
+				var y=env.s.pop()._datum;
+				env.s.push({"_type":"TC_BOOL","_datum":y>=x ? 'T' : 'F'}); 
+			}catch(e){
+				env.s.push(err.throw(e));
+			}
+			return;
+		}
+		env.s.push(err.throw("invalid arguments type."));
+	}
 	async included_func(){
 		if(env.is_string(env.TOS())){
 			const arg= env.s.pop();
@@ -509,6 +666,19 @@ class NativeLib{
 		env.set('a:pop',{_type: 'TC_NATIVE_FUNC', _datum: this.array_pop_func}, 'TC_WORD');
 		env.set('m:keys',{_type: 'TC_NATIVE_FUNC', _datum: this.object_keys_func}, 'TC_WORD');
 		env.set('m:values',{_type: 'TC_NATIVE_FUNC', _datum: this.object_values_func}, 'TC_WORD');
+		env.set('s:split',{_type: 'TC_NATIVE_FUNC', _datum: this.string_split_func}, 'TC_WORD');
+		env.set('s:join',{_type: 'TC_NATIVE_FUNC', _datum: this.string_join_func}, 'TC_WORD');
+		env.set('j:stringify',{_type: 'TC_NATIVE_FUNC', _datum: this.json_stringify_func}, 'TC_WORD');
+		env.set('j:parse',{_type: 'TC_NATIVE_FUNC', _datum: this.json_parse_func}, 'TC_WORD');
+		env.set('s:@',{_type: 'TC_NATIVE_FUNC', _datum: this.string_at_func}, 'TC_WORD');
+		env.set('s:!',{_type: 'TC_NATIVE_FUNC', _datum: this.string_set_at_func}, 'TC_WORD');
+		env.set('=',{_type: 'TC_NATIVE_FUNC', _datum: this.equal_func}, 'TC_WORD');
+		env.set('===',{_type: 'TC_NATIVE_FUNC', _datum: this.equal_func}, 'TC_WORD');
+		env.set('==',{_type: 'TC_NATIVE_FUNC', _datum: this.eq_func}, 'TC_WORD');
+		env.set('<',{_type: 'TC_NATIVE_FUNC', _datum: this.num_minor_func}, 'TC_WORD');
+		env.set('>',{_type: 'TC_NATIVE_FUNC', _datum: this.num_major_func}, 'TC_WORD');
+		env.set('<=',{_type: 'TC_NATIVE_FUNC', _datum: this.num_min_eq_func}, 'TC_WORD');
+		env.set('>=',{_type: 'TC_NATIVE_FUNC', _datum: this.num_maj_eq_func}, 'TC_WORD');
 	}
 };
 

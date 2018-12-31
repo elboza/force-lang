@@ -4,6 +4,7 @@ const env = require('./env');
 const err = require('./error');
 const eval = require('./eval');
 const loadfile = require('./load-file');
+const obj_utils = require('./obj_utils');
 
 class NativeLib{
 	constructor(){
@@ -85,7 +86,10 @@ class NativeLib{
 				log.info(x._datum);
 				break;
 			case 'TC_JSON':
-				log.info(JSON.stringify(x._datum));
+				log.info(obj_utils.stringify(x._datum));
+				break;
+			case 'TC_FUNC_JS':
+				log.info('#-<js func>');
 				break;
 			case 'TC_VAR':
 				log.info(x._name);
@@ -109,10 +113,13 @@ class NativeLib{
 				log.info(`{ ${x._type} ${x._datum} }`);
 				break;
 			case 'TC_JSON':
-				log.info(`{ ${x._type} ${JSON.stringify(x._datum)} }`);
+				log.info(`{ ${x._type} ${obj_utils.stringify(x._datum)} }`);
+				break;
+			case 'TC_FUNC_JS':
+				log.info('#-<js func>');
 				break;
 			case 'TC_VAR':
-				log.info(`{ ${x._type} ${x._name} ${x._datum._datum} }`);
+				log.info(`{ ${x._type} ${x._name} ${obj_utils.stringify(x._datum._datum)} }`);
 				break;
 			case 'TC_ERR':
 				log.info(`ERR: ${x._datum.msg}`);
@@ -631,6 +638,59 @@ class NativeLib{
 		}
 		env.s.push(err.throw('invalid throw argument in TOS'));
 	}
+	require_js_func(){
+		if(env.TOS() && env.TOS()._type == 'TC_STR'){
+			var x=env.s.pop()._datum;
+			var js=require(x);
+			env.s.push({"_type":env.guess_type(js),"_datum":js});
+			return;
+		}
+		env.s.push(err.throw('invalid request-js argumenttye'));
+	}
+	funcjs_exec_func(){
+		try{
+			if(env.TOS() && env.TOS()._type == 'TC_FUNC_JS'){
+				var x=env.s.pop()._datum;
+				var arity=x.length;
+				var args=[];
+				//log.info(arity);
+				while(arity>0){
+					args.unshift(env.s.pop()._datum);
+					arity--;
+				}
+				//log.info(args);
+				var y=x.apply(null,args);
+				//log.info(y);
+				if(y) env.s.push({"_type":env.guess_type(y),"_datum":y});
+				return;
+			}
+			if(env.TOS() && env.TOS()._type == 'TC_STR' && env.TOS2() && 	env.TOS2()._type=='TC_JSON'){
+				var method=env.s.pop()._datum;
+				var method_list=method.split(".");
+				var x=env.s.pop()._datum;
+				var funcall=x;
+				for(var item of method_list){
+					funcall=funcall[item];
+				}
+				//log.info(funcall);
+				var arity=funcall.length;
+				var args=[];
+				//log.info(arity);
+				while(arity>0){
+					args.unshift(env.s.pop()._datum);
+					arity--;
+				}
+				//log.info(args);
+				var y=funcall.apply(x,args);
+				//log.info(y);
+				if(y) env.s.push({"_type":env.guess_type(y),"_datum":y});
+				return;
+			}
+			env.s.push(err.throw('invalid request-js argumenttye'));
+		}catch(e){
+			env.s.push(err.throw(e));
+		}
+	}
 	handle_repl_func(){
 		err.handle_repl();
 	}
@@ -703,6 +763,8 @@ class NativeLib{
 		env.set('>=',{_type: 'TC_NATIVE_FUNC', _datum: this.num_maj_eq_func}, 'TC_WORD');
 		env.set('f:slurp',{_type: 'TC_NATIVE_FUNC', _datum: this.file_slurp_func}, 'TC_WORD');
 		env.set('net:request',{_type: 'TC_NATIVE_FUNC', _datum: this.net_request_func}, 'TC_WORD');
+		env.set('j:require-js',{_type: 'TC_NATIVE_FUNC', _datum: this.require_js_func}, 'TC_WORD');
+		env.set('!!',{_type: 'TC_NATIVE_FUNC', _datum: this.funcjs_exec_func}, 'TC_WORD');
 	}
 };
 

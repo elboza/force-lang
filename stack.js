@@ -1,4 +1,5 @@
 const log = require('bunny-logger');
+const obj_utils = require('./obj_utils');
 
 class Stack{
 	constructor(){
@@ -27,11 +28,14 @@ class Stack{
 				str += ' ' + item._datum;
 				break;
 			case 'TC_VAR':
-				if(item._datum._type=='TC_JSON') str += ' ' + JSON.stringify(item._datum._datum);
+				if(item._datum._type=='TC_JSON') str += ' ' + obj_utils.stringify(item._datum._datum);
 				else str += ' ' + item._datum._datum;
 				break;
 			case 'TC_JSON':
-				str += ' ' + JSON.stringify(item._datum);
+				str += ' ' + obj_utils.stringify(item._datum);
+				break;
+			case 'TC_FUNC_JS':
+				str += ' ' + obj_utils.stringify(item._datum);
 				break;
 			case 'TC_ERR':
 				str += ' ' + JSON.stringify(item._datum);

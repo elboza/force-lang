@@ -83,6 +83,9 @@ class Env{
 			case 'boolean':
 				return 'TC_BOOL';
 				break;
+			case 'function':
+				return 'TC_FUNC_JS';
+				break;
 			default:
 				return 'TC_UNDEF';
 				break;

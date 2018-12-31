@@ -181,6 +181,10 @@ class Eval{
 						case 'TC_COMP_FUNC':
 							this.eval_parsed(y._datum._datum);
 							break;
+						case 'TC_FUNC_JS':
+							//this.eval_parsed(y._datum._datum);
+							log.info('js func...');
+							break;
 						default:
 							this.s.push(y);
 							//log.error(`unknown type ${y._datum._type} for ${y._name}`);

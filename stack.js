@@ -37,6 +37,9 @@ class Stack{
 			case 'TC_FUNC_JS':
 				str += ' ' + obj_utils.stringify(item._datum);
 				break;
+			case 'TC_LAMBDA_FUNC':
+				str += ' ' //+ JSON.stringify(item._datum._datum);
+				break;
 			case 'TC_ERR':
 				str += ' ' + JSON.stringify(item._datum);
 				break;

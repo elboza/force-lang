@@ -34,6 +34,7 @@ if           ********
 while        ********
 case of      ********
 required
+j:require-js ********
 s:split      ********
 s:join       ********
 a:join       ********
@@ -42,7 +43,7 @@ a:pop        *********
 m:keys       ********* 
 m:values     *********
 >r r> r@ r!
-( func )
+( func )    **********
 dup         **********
 swap        **********
 drop        **********

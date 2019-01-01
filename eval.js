@@ -251,6 +251,26 @@ class Eval{
 					env.set(func_name._datum, {_type: 'TC_COMP_FUNC', _datum: body}, 'TC_COMP_FUNC', func_name._where);
 					continue;
 				}
+				if(x._datum == '('){
+					this.mode = 'compile';
+					var y;
+					var body = [];
+					//var func_name = read.read(stream);
+					var level=0;
+					while((y=read.read(stream))!=false){
+						if(y._datum=='(') level++;
+						if(y._datum==')') {
+							if(level==0) {
+								this.mode = 'interpret'; break;
+							}
+							level--;
+						}
+						body.push(y);
+					}
+					//env.set(func_name._datum, {_type: 'TC_LAMBDA_FUNC', _datum: body}, 'TC_LAMBDA_FUNC', func_name._where);
+					env.s.push({_type: 'TC_LAMBDA_FUNC', _datum: body})
+					continue;
+				}
 				if(x._datum == 'see'){
 					var func_name = read.read(stream);
 					this.see_func(func_name._datum);

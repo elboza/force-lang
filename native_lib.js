@@ -1,5 +1,6 @@
 const log = require('bunny-logger');
 const request = require('request-promise-native');
+const JSON5 = require('json5');
 const env = require('./env');
 const err = require('./error');
 const eval = require('./eval');
@@ -91,6 +92,9 @@ class NativeLib{
 			case 'TC_FUNC_JS':
 				log.info('#-<js func>');
 				break;
+			case 'TC_LAMBDA_FUNC':
+				log.info('#-<lambda func>');
+				break;
 			case 'TC_VAR':
 				log.info(x._name);
 				break;
@@ -117,6 +121,9 @@ class NativeLib{
 				break;
 			case 'TC_FUNC_JS':
 				log.info('#-<js func>');
+				break;
+			case 'TC_LAMBDA_FUNC':
+				log.info('#-<lambda func>');
 				break;
 			case 'TC_VAR':
 				log.info(`{ ${x._type} ${x._name} ${obj_utils.stringify(x._datum._datum)} }`);
@@ -469,7 +476,7 @@ class NativeLib{
 	json_stringify_func(){
 		if(env.is_json(env.TOS())){
 			try{
-			env.s.push({"_type":"TC_STR","_datum":JSON.stringify(env.s.pop()._datum)});
+			env.s.push({"_type":"TC_STR","_datum":JSON5.stringify(env.s.pop()._datum)});
 			}catch(e){
 				env.s.push(err.throw(e));
 			}
@@ -480,7 +487,7 @@ class NativeLib{
 	json_parse_func(){
 		if(env.is_string(env.TOS())){
 			try{
-			env.s.push({"_type":"TC_JSON","_datum":JSON.parse(env.s.pop()._datum)});
+			env.s.push({"_type":"TC_JSON","_datum":JSON5.parse(env.s.pop()._datum)});
 			}catch(e){
 				env.s.push(err.throw(e));
 			}
@@ -649,6 +656,10 @@ class NativeLib{
 	}
 	funcjs_exec_func(){
 		try{
+			if(env.TOS() && env.TOS()._type=='TC_LAMBDA_FUNC'){
+				eval.eval_parsed(env.s.pop()._datum);
+				return;
+			}
 			if(env.TOS() && env.TOS()._type == 'TC_FUNC_JS'){
 				var x=env.s.pop()._datum;
 				var arity=x.length;

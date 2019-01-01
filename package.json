@@ -1,17 +1,26 @@
 {
   "name": "force-lang",
   "version": "0.0.1",
-  "description": "",
+  "description": "modern forth lang compatible with NodeJS",
   "main": "force",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "bin": {
+    "force": "./src/force"
   },
-  "author": "",
-  "license": "ISC",
+  "man": [
+    "./doc/force.1",
+    "./doc/force-lang.1"
+  ],
+  "scripts": {
+    "test": "src/force -f tests/unit_tests.j",
+    "postinstall": "marked-man README.md > doc/force.1 && marked-man README.md > doc/force-lang.1"
+  },
+  "author": "Fernando Iazeolla <fernando.iazeolla@gmail.com>",
+  "license": "Beerware",
   "dependencies": {
     "bunny-logger": "0.0.2",
     "commander": "^2.19.0",
     "json5": "^2.1.0",
+    "marked-man": "^0.2.1",
     "request": "^2.88.0",
     "request-promise-native": "^1.0.5"
   }

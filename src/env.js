@@ -114,6 +114,15 @@ class Env{
 	lookup(name, type){
 		return this.lookup_norm(name, type);
 	}
+	delete_norm(name){
+		let index = this._dict.map(function(e) { return e._name; }).indexOf(name);
+		log.info(index);
+		log.info(this._dict[index]);
+		this._dict.slice(index,1);
+	}
+	delete(name){
+		return this.delete_norm(name);
+	}
 	set_ns(name, val){
 
 	}

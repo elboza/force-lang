@@ -603,6 +603,17 @@ class NativeLib{
 		}
 		env.s.push(err.throw("invalid arguments type."));
 	}
+	delete_dict_func(){
+		if(env.TOS() && env.TOS()._type=='TC_STR'){
+			try{
+				env.delete(env.s.pop()._datum); 
+			}catch(e){
+				env.s.push(err.throw(e));
+			}
+			return;
+		}
+		env.s.push(err.throw("invalid arguments type."));
+	}
 	async net_request_func(){
 		if(env.is_obj(env.TOS())){
 			try{
@@ -776,6 +787,7 @@ class NativeLib{
 		env.set('net:request',{_type: 'TC_NATIVE_FUNC', _datum: this.net_request_func}, 'TC_WORD');
 		env.set('j:require-js',{_type: 'TC_NATIVE_FUNC', _datum: this.require_js_func}, 'TC_WORD');
 		env.set('!!',{_type: 'TC_NATIVE_FUNC', _datum: this.funcjs_exec_func}, 'TC_WORD');
+		env.set('G:delete',{_type: 'TC_NATIVE_FUNC', _datum: this.delete_dict_func}, 'TC_WORD');
 	}
 };
 

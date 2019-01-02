@@ -50,7 +50,9 @@ drop        **********
 ndrop
 exit
 nbye        **********
-delete
+G:delete
 .j  (print pretty json)
+.y
 .""
 .()
+webscraping cheerio

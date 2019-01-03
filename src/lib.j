@@ -20,7 +20,6 @@
 	drop drop ;
 
 : f+
-	dup
 	case
 	dup is_string of s:+ endof
 	over is_string of s:+ endof

@@ -152,12 +152,12 @@ class Eval{
 			}
 		}
 		//log.info({case_list});
-		let x = env.s.pop();
+		//let x = env.s.pop();
 		for(var item of case_list){
 			//log.info(item.test_body);
 			this.eval_parsed(item.test_body);
 			let y = env.s.pop();
-			if(env.is_true(y) || x._datum == y._datum){
+			if(env.is_true(y) /*|| x._datum == y._datum*/){
 				//log.info(item.case_body);//????
 				this.eval_parsed(item.case_body);
 				break;

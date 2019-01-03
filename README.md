@@ -5,9 +5,48 @@
 Force is a modern dialect of Forth written in NodeJS and can use the NodeJS packages universe.
 It is called Force because of its assonance of Forth and since the Force is the main power of the Jedi the files have .j (or .jedi) extension. So Force is the Jedi programmers language !
 
+## language constructs
+```text
+( ... )       \ lambda func
+example: ( 1 2 + )
+
+see xxx       \ see function definition
+example: see cr
+
+... if ... else ... then
+              \ if ( x -- )
+              \ else ( -- )
+              \ then ( -- )
+example: T if "no" . else "yes" . then
+
+... begin ... repeat ... while
+              \ begin ( -- )
+              \ repeat ( -- )
+              \ while ( b -- )
+example: 3 begin dup 0 > while 1 - repeat .
+\ ( 3 is not consumed and has to be removed manually )
+case
+... of ... endof
+... of ... endof
+...
+endcase
+              \ case ( -- )
+              \ of ( b -- )
+              \ endof ( -- )
+              \ endcase ( -- )
+example:
+33
+case
+ "foo" =  of "it's foo string" .           endof
+ 33 =     of "it's 33 number !!" .         endof
+ 10 <     of "it's a number minor fo 10" . endof
+ T        of "default action..."           endof
+endcase
+\ ( 33 is not consumed has to be removed manually )
+```
+
 ## standard lib
 ```text
-pippo         \ ( -- )
 bye           \ ( -- )
 noop          \ ( -- )
 .s            \ ( -- )

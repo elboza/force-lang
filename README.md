@@ -24,7 +24,7 @@ example: T if "no" . else "yes" . then
               \ repeat ( -- )
               \ while ( b -- )
 example: 3 begin dup 0 > while 1 - repeat .
-\ ( 3 is not consumed and has to be removed manually )
+
 case
 ... of ... endof
 ... of ... endof

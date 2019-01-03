@@ -6,6 +6,7 @@ Force is a modern dialect of Forth written in NodeJS and can use the NodeJS pack
 It is called Force because of its assonance of Forth and since the Force is the main power of the Jedi the files have .j (or .jedi) extension. So Force is the Jedi programmers language !
 
 ## standard lib
+'''
 pippo         \ ( -- )
 bye           \ ( -- )
 noop          \ ( -- )
@@ -82,4 +83,4 @@ f+            \ ( x y -- z )
 a:join        \ ( a s -- s )
 j:encode      \ ( j -- s )
 j:decode      \ ( s -- j )
-
+'''

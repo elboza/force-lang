@@ -11,15 +11,23 @@ It is called Force because of its assonance of Forth and since the Force is the 
 .RS 2
 .nf
 ( \.\.\. )       \\ lambda func
+example: ( 1 2 + )
+
 see xxx       \\ see function definition
+example: see cr
+
 \|\.\.\. if \.\.\. else \.\.\. then
               \\ if ( x \-\- )
               \\ else ( \-\- )
               \\ then ( \-\- )
-begin \.\.\. repeat \.\.\. while
+example: T if "no" \. else "yes" \. then
+
+\|\.\.\. begin \.\.\. repeat \.\.\. while
               \\ begin ( \-\- )
               \\ repeat ( \-\- )
               \\ while ( b \-\- )
+example: 3 begin dup 0 > while 1 \- repeat \.
+
 case
 \|\.\.\. of \.\.\. endof
 \|\.\.\. of \.\.\. endof
@@ -29,13 +37,21 @@ endcase
               \\ of ( b \-\- )
               \\ endof ( \-\- )
               \\ endcase ( \-\- )
+example:
+33
+case
+ "foo" =  of "it's foo string" \.           endof
+ 33 =     of "it's 33 number !!" \.         endof
+ 10 <     of "it's a number minor fo 10" \. endof
+ T        of "default action\.\.\."           endof
+endcase
+\\ ( 33 is not consumed has to be removed manually )
 .fi
 .RE
 .SH standard lib
 .P
 .RS 2
 .nf
-pippo         \\ ( \-\- )
 bye           \\ ( \-\- )
 noop          \\ ( \-\- )
 \|\.s            \\ ( \-\- )

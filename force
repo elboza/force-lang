@@ -1,16 +1,12 @@
 #!/usr/bin/env node
 
 //const repl = require('repl');
-const NativeLib = require('./native_lib');
-const eval = require('./eval');
 var program = require('commander');
 const log = require('bunny-logger');
 const readline = require('readline');
-const loadfile = require('./load-file');
+const force = require('./src/force-lang');
 
 (async function main(){
-
-
 
 program
   .version('0.0.1')
@@ -20,7 +16,7 @@ program
   .option('-s, --stdin', 'input from stdin')
   .parse(process.argv);
 
-await eval.load_lib();
+await force.load_lib();
 
 if(program.file){
 	if(typeof(program.file)!=='string'){
@@ -28,8 +24,7 @@ if(program.file){
 		process.exit(1);
 	}
 	log.info(program.file);
-	var x = await loadfile.load(program.file);
-	eval.eval(x);
+	await force.eval_file(program.file);
 }
 
 if(program.exec){
@@ -38,12 +33,12 @@ if(program.exec){
 		process.exit(1);
 	}
 	//log.info(program.exec);
-	eval.eval(program.exec);
+	force.exec(program.exec);
 }
 if(program.shell){
 	//repl.start({prompt: '> ',eval: function(e){eval.eval(e);}});
 
-	NativeLib.populate_repl();
+	force.populate_repl();
 
 	const rl = readline.createInterface({
   	input: process.stdin,
@@ -55,7 +50,7 @@ if(program.shell){
 
 	rl.on('line', (line) => {
 		//log.info(line);
-		eval.eval(line);
+		force.exec(line);
 	});
 }
 

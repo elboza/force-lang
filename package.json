@@ -2,9 +2,9 @@
   "name": "force-lang",
   "version": "0.0.1",
   "description": "modern forth lang compatible with NodeJS",
-  "main": "force",
+  "main": "./src/force-lang.js",
   "bin": {
-    "force": "./src/force"
+    "force": "./force"
   },
   "man": [
     "./doc/force.1",

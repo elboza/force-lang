@@ -1,7 +1,7 @@
 {
   "name": "force-lang",
   "version": "0.0.1",
-  "description": "modern forth lang compatible with NodeJS",
+  "description": "a modern forth lang compatible with NodeJS",
   "main": "./src/force-lang.js",
   "bin": {
     "force": "./force"
@@ -16,6 +16,10 @@
   },
   "author": "Fernando Iazeolla <fernando.iazeolla@gmail.com>",
   "license": "Beerware",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/elboza/force-lang.git"
+  },
   "dependencies": {
     "bunny-logger": "0.0.2",
     "commander": "^2.19.0",
@@ -23,5 +27,13 @@
     "marked-man": "^0.2.1",
     "request": "^2.88.0",
     "request-promise-native": "^1.0.5"
-  }
+  },
+  "keywords": [
+    "forth",
+    "nodejs",
+    "jedi",
+    "force-lang",
+    "force"
+  ],
+  "homepage": "https://github.com/elboza/force-lang.git"
 }

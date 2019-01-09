@@ -7,9 +7,9 @@ It is called Force because of its assonance of Forth and since the Force is the 
 
 ## using Force as standalone interpreter
 ```bash
-npm install force-lang -g
+$ npm install force-lang -g
 
-force -h
+$ force -h
 
 Usage: force [options]
 
@@ -33,7 +33,7 @@ $ cat example.j
 ## using Forec as node module
 
 ```bash
-npm i force-lang
+$ npm i force-lang
 ```
 
 ```javascript

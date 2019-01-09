@@ -663,7 +663,7 @@ class NativeLib{
 			env.s.push({"_type":env.guess_type(js),"_datum":js});
 			return;
 		}
-		env.s.push(err.throw('invalid request-js argumenttye'));
+		env.s.push(err.throw('invalid request-js argument type'));
 	}
 	funcjs_exec_func(){
 		try{
@@ -708,7 +708,7 @@ class NativeLib{
 				if(y) env.s.push({"_type":env.guess_type(y),"_datum":y});
 				return;
 			}
-			env.s.push(err.throw('invalid request-js argumenttye'));
+			env.s.push(err.throw('invalid funcall-js argument type'));
 		}catch(e){
 			env.s.push(err.throw(e));
 		}
@@ -718,6 +718,147 @@ class NativeLib{
 	}
 	handle_standard_func(){
 		err.handle_standard();
+	}
+	regex_test_func(){
+		try{
+			if(env.is_obj(env.TOS()) && env.is_string(env.TOS2())){
+				var rex_obj = env.s.pop(),_datum;
+				var str = env.s.pop()._datum;
+				var my_rex = new RegExp(rex_obj.rex, rex_obj.flags);
+				const result = my_rex.test(str);
+				env.s.push(
+						result ?
+						env.true_obj() :
+						env.false_obj()
+					);
+				return;
+			}
+			if(env.is_string(env.TOS()) && env.is_string(env.TOS2())){
+				var rex = env.s.pop()._datum;
+				var str = env.s.pop()._datum;
+				var my_rex = new RegExp(rex);
+				const result = my_rex.test(str);
+				env.s.push(
+						result ?
+						env.true_obj() :
+						env.false_obj()
+					);
+				return;
+			}
+			env.s.push(err.throw('invalid regex test argument type'));
+		}catch(e){
+			env.s.push(err.throw(e));
+		}
+	}
+	regex_exec_func(){
+		try{
+			if(env.is_obj(env.TOS()) && env.is_string(env.TOS2())){
+				var rex_obj = env.s.pop(),_datum;
+				var str = env.s.pop()._datum;
+				var my_rex = new RegExp(rex_obj.rex, rex_obj.flags);
+				const result = my_rex.exec(str);
+				env.s.push(
+						result ?
+						{"_type":"TC_JSON","_datum":result} :
+						0
+					);
+				return;
+			}
+			if(env.is_string(env.TOS()) && env.is_string(env.TOS2())){
+				var rex = env.s.pop()._datum;
+				var str = env.s.pop()._datum;
+				var my_rex = new RegExp(rex);
+				const result = my_rex.exec(str);
+				env.s.push(
+						result ?
+						{"_type":"TC_JSON","_datum":result} :
+						0
+					);
+				return;
+			}
+			env.s.push(err.throw('invalid regex exec argument type'));
+		}catch(e){
+			env.s.push(err.throw(e));
+		}
+	}
+	regex_match_func(){
+		try{
+			if(env.is_obj(env.TOS()) && env.is_string(env.TOS2())){
+				var rex_obj = env.s.pop(),_datum;
+				var str = env.s.pop()._datum;
+				var my_rex = new RegExp(rex_obj.rex, rex_obj.flags);
+				const result = str.match(my_rex);
+				env.s.push(
+						result ?
+						{"_type":"TC_JSON","_datum":result} :
+						0
+					);
+				return;
+			}
+			if(env.is_string(env.TOS()) && env.is_string(env.TOS2())){
+				var rex = env.s.pop()._datum;
+				var str = env.s.pop()._datum;
+				var my_rex = new RegExp(rex);
+				const result = str.match(my_rex);
+				env.s.push(
+						result ?
+						{"_type":"TC_JSON","_datum":result} :
+						0
+					);
+				return;
+			}
+			env.s.push(err.throw('invalid regex match argument type'));
+		}catch(e){
+			env.s.push(err.throw(e));
+		}
+	}
+	regex_search_func(){
+		try{
+			if(env.is_obj(env.TOS()) && env.is_string(env.TOS2())){
+				var rex_obj = env.s.pop(),_datum;
+				var str = env.s.pop()._datum;
+				var my_rex = new RegExp(rex_obj.rex, rex_obj.flags);
+				const result = str.search(my_rex);
+				env.s.push({"_type":"TC_NUM","_datum":result});
+				return;
+			}
+			if(env.is_string(env.TOS()) && env.is_string(env.TOS2())){
+				var rex = env.s.pop()._datum;
+				var str = env.s.pop()._datum;
+				var my_rex = new RegExp(rex);
+				const result = str.search(my_rex);
+				env.s.push({"_type":"TC_NUM","_datum":result});
+				return;
+			}
+			env.s.push(err.throw('invalid regex search argument type'));
+		}catch(e){
+			env.s.push(err.throw(e));
+		}
+	}
+	regex_replace_func(){
+		try{
+			if(env.is_obj(env.TOS()) && env.is_string(env.TOS2()) && env.is_string(env.s.look_at(2))){
+				var rex_obj = env.s.pop(),_datum;
+				var replace = env.s.pop()._datum;
+				var str = env.s.pop()._datum;
+				var my_rex = new RegExp(rex_obj.rex, rex_obj.flags);
+				const result = str.replace(my_rex, replace);
+				env.s.push({"_type":"TC_JSON","_datum":result});
+				return;
+			}
+			if(env.is_string(env.TOS()) && env.is_string(env.TOS2()) && env.is_string(env.s.look_at(2))){
+				var rex = env.s.pop()._datum;
+				var replace = env.s.pop()._datum;
+				var str = env.s.pop()._datum;
+				var my_rex = new RegExp(rex);
+				const result = str.replace(my_rex, replace);
+				env.s.push({"_type":"TC_STR","_datum":result});
+				return;
+			}
+			env.s.push(err.throw('invalid regex replace argument type'));
+		}catch(e){
+			env.s.push(err.throw(e));
+		}
 	}
 	populate_repl(){
 		env.set('handle',{_type: 'TC_NATIVE_FUNC', _datum: this.handle_repl_func}, 'TC_WORD');
@@ -788,6 +929,11 @@ class NativeLib{
 		env.set('j:require-js',{_type: 'TC_NATIVE_FUNC', _datum: this.require_js_func}, 'TC_WORD');
 		env.set('!!',{_type: 'TC_NATIVE_FUNC', _datum: this.funcjs_exec_func}, 'TC_WORD');
 		env.set('G:delete',{_type: 'TC_NATIVE_FUNC', _datum: this.delete_dict_func}, 'TC_WORD');
+		env.set('rx:test',{_type: 'TC_NATIVE_FUNC', _datum: this.regex_test_func}, 'TC_WORD');
+		env.set('rx:exec',{_type: 'TC_NATIVE_FUNC', _datum: this.regex_exec_func}, 'TC_WORD');
+		env.set('rx:match',{_type: 'TC_NATIVE_FUNC', _datum: this.regex_match_func}, 'TC_WORD');
+		env.set('rx:search',{_type: 'TC_NATIVE_FUNC', _datum: this.regex_search_func}, 'TC_WORD');
+		env.set('rx:replace',{_type: 'TC_NATIVE_FUNC', _datum: this.regex_replace_func}, 'TC_WORD');
 	}
 };
 

@@ -8,7 +8,7 @@ module.exports={
   	    return placeholder;
   	  }
   	  return value;
-  	}, 2);
+  	}, 0);
   	json = json.replace(new RegExp('"' + placeholder + '"', 'g'), function(_) {
   	  return fns.shift();
   	});

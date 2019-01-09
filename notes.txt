@@ -56,5 +56,10 @@ G:delete
 .""
 .()
 webscraping cheerio
-regex
+regex       **********
+rx:test      ********* 
+rx:match     *********
+rx:exec      *********
+rx:search    ********* 
+rx:replace   *********
 

@@ -4,12 +4,13 @@
 var program = require('commander');
 const log = require('bunny-logger');
 const readline = require('readline');
+const pkg = require('./package');
 const force = require('./src/force-lang');
 
 (async function main(){
 
 program
-  .version('0.0.1')
+  .version(pkg.version)
   .option('-f, --file [file]', 'input from file')
   .option('-x, --exec [text]', 'input from string')
   .option('-i, --shell', 'run repl')

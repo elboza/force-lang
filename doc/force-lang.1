@@ -6,6 +6,56 @@
 .P
 Force is a modern dialect of Forth written in NodeJS and can use the NodeJS packages universe\.
 It is called Force because of its assonance of Forth and since the Force is the main power of the Jedi the files have \.j (or \.jedi) extension\. So Force is the Jedi programmers language !
+.SH using Force as standalone interpreter
+.P
+.RS 2
+.nf
+$ npm install force\-lang \-g
+
+$ force \-h
+
+Usage: force [options]
+
+Options:
+  \-V, \-\-version      output the version number
+  \-f, \-\-file [file]  input from file
+  \-x, \-\-exec [text]  input from string
+  \-i, \-\-shell        run repl
+  \-s, \-\-stdin        input from stdin
+  \-h, \-\-help         output usage information
+.fi
+.RE
+.SH using Force in script
+.P
+.RS 2
+.nf
+$ cat example\.j
+
+#!/usr/local/bin/force \-f
+
+2 2 + \.
+.fi
+.RE
+.SH using Force as node module
+.P
+.RS 2
+.nf
+$ npm i force\-lang
+.fi
+.RE
+.P
+.RS 2
+.nf
+const force = require ('force\-lang');
+
+var x = '2 2 + \.';
+
+(async function(){
+  await force\.load_lib();
+  force\.exec(x);
+})();
+.fi
+.RE
 .SH language constructs
 .P
 .RS 2
@@ -127,6 +177,11 @@ f+            \\ ( x y \-\- z )
 a:join        \\ ( a s \-\- s )
 j:encode      \\ ( j \-\- s )
 j:decode      \\ ( s \-\- j )
+rx:test       \\ ( s s \-\- b ) or (s j \-\- b )
+rx:exec       \\ ( s s \-\- j ) or (s j \-\- j )
+rx:match      \\ ( s s \-\- j ) or (s j \-\- j )
+rx:search     \\ ( s s \-\- n ) or (s j \-\- n )
+rx:replace    \\ ( s s s \-\- s ) or (s s j \-\- s )
 .fi
 .RE
 

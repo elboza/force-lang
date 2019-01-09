@@ -5,6 +5,48 @@
 Force is a modern dialect of Forth written in NodeJS and can use the NodeJS packages universe.
 It is called Force because of its assonance of Forth and since the Force is the main power of the Jedi the files have .j (or .jedi) extension. So Force is the Jedi programmers language !
 
+## using Force as standalone interpreter
+```bash
+npm install force-lang -g
+
+force -h
+
+Usage: force [options]
+
+Options:
+  -V, --version      output the version number
+  -f, --file [file]  input from file
+  -x, --exec [text]  input from string
+  -i, --shell        run repl
+  -s, --stdin        input from stdin
+  -h, --help         output usage information
+```
+
+##using Force in script
+```text
+$ cat example.j
+
+#!/usr/local/bin/force -f
+
+2 2 + .
+```
+## using Forec as node module
+
+```bash
+npm i force-lang
+```
+
+```javascript
+const force = require ('force-lang');
+
+var x='2 2 + .';
+
+(async function(){
+  await force.load_lib();
+  force.exec(x);
+})();
+```
+
 ## language constructs
 ```text
 ( ... )       \ lambda func

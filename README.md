@@ -39,7 +39,7 @@ $ npm i force-lang
 ```javascript
 const force = require ('force-lang');
 
-var x='2 2 + .';
+var x = '2 2 + .';
 
 (async function(){
   await force.load_lib();

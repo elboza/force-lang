@@ -30,7 +30,7 @@ $ cat example.j
 
 2 2 + .
 ```
-## using Forec as node module
+## using Force as node module
 
 ```bash
 $ npm i force-lang

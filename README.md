@@ -22,7 +22,7 @@ Options:
   -h, --help         output usage information
 ```
 
-##using Force in script
+## using Force in script
 ```text
 $ cat example.j
 

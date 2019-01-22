@@ -1,5 +1,6 @@
 const log = require('bunny-logger');
-const request = require('request-promise-native');
+//const request = require('request-promise-native');
+const request = require('sync-request');
 const JSON5 = require('json5');
 const env = require('./env');
 const err = require('./error');
@@ -614,11 +615,14 @@ class NativeLib{
 		}
 		env.s.push(err.throw("invalid arguments type."));
 	}
-	async net_request_func(){
+	net_request_func(){ //async....
 		if(env.is_obj(env.TOS())){
 			try{
-				let resp= await request(env.s.pop()._datum);
-				env.s.push({"_type":"TC_STR","_datum":resp}); 
+				//let resp= await request(env.s.pop()._datum);
+				let x=env.s.pop()._datum;
+				let resp= request(x.method,x.url,x);
+				//env.s.push({"_type":"TC_STR","_datum":resp});
+				env.s.push({"_type":"TC_STR","_datum":resp.body.toString('utf8')}); 
 			}catch(e){
 				env.s.push(err.throw(e));
 			}

@@ -177,11 +177,11 @@ f+            \\ ( x y \-\- z )
 a:join        \\ ( a s \-\- s )
 j:encode      \\ ( j \-\- s )
 j:decode      \\ ( s \-\- j )
-rx:test       \\ ( s s \-\- b ) or (s j \-\- b )
-rx:exec       \\ ( s s \-\- j ) or (s j \-\- j )
-rx:match      \\ ( s s \-\- j ) or (s j \-\- j )
-rx:search     \\ ( s s \-\- n ) or (s j \-\- n )
-rx:replace    \\ ( s s s \-\- s ) or (s s j \-\- s )
+rx:test       \\ ( s srx \-\- b ) or (s j \-\- b )
+rx:exec       \\ ( s srx \-\- j ) or (s j \-\- j )
+rx:match      \\ ( s srx \-\- j ) or (s j \-\- j )
+rx:search     \\ ( s srx \-\- n ) or (s j \-\- n )
+rx:replace    \\ ( s s srx \-\- s ) or (s s j \-\- s )
 .fi
 .RE
 

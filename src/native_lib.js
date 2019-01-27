@@ -630,19 +630,19 @@ class NativeLib{
 		}
 		env.s.push(err.throw("invalid arguments type."));
 	}
-	async included_func(){
+	included_func(){
 		if(env.is_string(env.TOS())){
 			const arg= env.s.pop();
-			var x = await loadfile.load(arg._datum);
+			var x = loadfile.loadsync(arg._datum);
 			eval.eval(x);
 			return;
 		}
 		env.s.push(err.throw("invalid arguments type"));
 	}
-	async file_slurp_func(){
+	file_slurp_func(){
 		if(env.is_string(env.TOS())){
 			const arg= env.s.pop();
-			var x = await loadfile.load(arg._datum);
+			var x = loadfile.loadsync(arg._datum);
 			env.s.push({"_type":"TC_STR","_datum":x});
 			return;
 		}

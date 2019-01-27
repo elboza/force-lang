@@ -1,0 +1,1 @@
+"examples/testfile.txt" f:slurp .

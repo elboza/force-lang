@@ -1,4 +1,4 @@
-"../examples/testjs.js" j:require-js
+"testjs.js" j:require-js
 
 var a          //declare variable a
 a !            // assign the required js to the var a

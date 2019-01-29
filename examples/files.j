@@ -1,1 +1,1 @@
-"examples/testfile.txt" f:slurp .
+"testfile.txt" f:slurp .

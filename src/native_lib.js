@@ -51,7 +51,7 @@ class NativeLib{
 			process.stdout.write(String.fromCharCode(x._datum));
 			return;
 		}
-		log.info(`unknown item type ${x._type} of ${x._datum}`);
+		env.s.push(err.throw(`unknown item type ${x._type} of ${x._datum}`));
 	}
 	see_func(func_name){
 		var x=env.lookup(func_name);
@@ -348,118 +348,168 @@ class NativeLib{
 	}
 	array_at_func(){
 		if(env.is_num(env.TOS()) && env.is_list(env.TOS2())){
-			var index=env.s.pop()._datum;
-			var arr=env.s.pop()._datum;
-			if(index<0) index=arr.length+index;
-			if(index>=arr.length || index<0){
-				env.s.push(err.throw("invalid index bound"));
+			try{
+				var index=env.s.pop()._datum;
+				var arr=env.s.pop()._datum;
+				if(index<0) index=arr.length+index;
+				if(index>=arr.length || index<0){
+					env.s.push(err.throw("invalid index bound"));
+					return;
+				}
+				const value=arr[index];
+				const xval=env.adj_bool_val(value);
+				env.s.push({"_type":env.guess_type(value), "_datum":xval});
+				return;
+			}catch(e){
+				env.s.push(err.throw(e));
 				return;
 			}
-			const value=arr[index];
-			const xval=env.adj_bool_val(value);
-			env.s.push({"_type":env.guess_type(value), "_datum":xval});
-			return;
 		}
 		env.s.push(err.throw("invalid arguments type"));
 	}
 	array_set_at_func(){
 		if(env.TOS() && env.is_num(env.TOS2()) && env.is_list(env.s.look_at(2))){
-			var value=env.s.pop()._datum;
-			var index=env.s.pop()._datum;
-			var arr=env.s.pop()._datum;
-			if(index<0) index=arr.length+index;
-			if(index>=arr.length || index<0){
-				env.s.push(err.throw("invalid index bound"));
+			try{
+				var value=env.s.pop()._datum;
+				var index=env.s.pop()._datum;
+				var arr=env.s.pop()._datum;
+				if(index<0) index=arr.length+index;
+				if(index>=arr.length || index<0){
+					env.s.push(err.throw("invalid index bound"));
+					return;
+				}
+				arr[index]=value;
+				env.s.push({"_type":"TC_JSON", "_datum":arr});
+				return;
+			}catch(e){
+				env.s.push(err.throw(e));
 				return;
 			}
-			arr[index]=value;
-			env.s.push({"_type":"TC_JSON", "_datum":arr});
-			return;
 		}
 		env.s.push(err.throw("invalid arguments type"));
 	}
 	object_at_func(){
 		if(env.is_string(env.TOS()) && env.is_obj(env.TOS2())){
-			var key=env.s.pop()._datum;
-			var obj=env.s.pop()._datum;
-			var value=obj[key];
-			if(value){
-				const xval=env.adj_bool_val(value);
-				env.s.push({"_type":env.guess_type(value), "_datum":xval});
+			try{
+				var key=env.s.pop()._datum;
+				var obj=env.s.pop()._datum;
+				var value=obj[key];
+				if(value){
+					const xval=env.adj_bool_val(value);
+					env.s.push({"_type":env.guess_type(value), "_datum":xval});
+					return;
+				}
+				env.s.push(err.throw("invalid object key"));
+				return;
+			}catch(e){
+				env.s.push(err.throw(e));
 				return;
 			}
-			env.s.push(err.throw("invalid object key"));
-			return;
 		}
 		env.s.push(err.throw("invalid arguments type"));
 	}
 	object_set_at_func(){
 		if(env.TOS() && env.is_string(env.TOS2()) && env.is_obj(env.s.look_at(2))){
-			var value=env.s.pop()._datum;
-			var key=env.s.pop()._datum;
-			var obj=env.s.pop()._datum;
-			obj[key]=value;
-			env.s.push({"_type":'TC_JSON', "_datum":obj});
-			return;
+			try{
+				var value=env.s.pop()._datum;
+				var key=env.s.pop()._datum;
+				var obj=env.s.pop()._datum;
+				obj[key]=value;
+				env.s.push({"_type":'TC_JSON', "_datum":obj});
+				return;
+			}catch(e){
+				env.s.push(err.throw(e));
+				return;
+			}
 		}
 		env.s.push(err.throw("invalid arguments type"));
 	}
 	array_length_func(){
 		if(env.is_list(env.TOS())){
-			var x=env.s.pop()._datum.length;
-			env.s.push({"_type":"TC_NUM","_datum":x});
-			return;
+			try{
+				var x=env.s.pop()._datum.length;
+				env.s.push({"_type":"TC_NUM","_datum":x});
+				return;
+			}catch(e){
+				env.s.push(err.throw(e));
+				return;
+			}
 		}
 		env.s.push(err.throw("invalid arguments type. TOS not a list"));
 	}
 	array_push_func(){
 		if(env.is_list(env.TOS2()) && env.TOS()){
-			var value=env.s.pop()._datum;
-			var arr=env.s.pop()._datum;
-			arr.push(value);
-			env.s.push({"_type":"TC_JSON","_datum":arr});
-			return;
+			try{
+				var value=env.s.pop()._datum;
+				var arr=env.s.pop()._datum;
+				arr.push(value);
+				env.s.push({"_type":"TC_JSON","_datum":arr});
+				return;
+			}catch(e){
+				env.s.push(err.throw(e));
+				return;
+			}
 		}
 		env.s.push(err.throw("invalid arguments type."));
 	}
 	array_pop_func(){
 		if(env.is_list(env.TOS())){
-			var value=env.s.pop()._datum.pop();
-			const xval=env.adj_bool_val(value);
-			env.s.push({"_type":env.guess_type(value), "_datum":xval});
-			return;
+			try{
+				var value=env.s.pop()._datum.pop();
+				const xval=env.adj_bool_val(value);
+				env.s.push({"_type":env.guess_type(value), "_datum":xval});
+				return;
+			}catch(e){
+				env.s.push(err.throw(e));
+				return;
+			}
 		}
 		env.s.push(err.throw("invalid arguments type. TOS not a list"));
 	}
 	object_keys_func(){
 		if(env.is_obj(env.TOS())){
-			var x=env.s.pop()._datum;
-			env.s.push({"_type":"TC_JSON","_datum":Object.keys(x)});
-			return;
+			try{
+				var x=env.s.pop()._datum;
+				env.s.push({"_type":"TC_JSON","_datum":Object.keys(x)});
+				return;
+			}catch(e){
+				env.s.push(err.throw(e));
+				return;
+			}
 		}
 		env.s.push(err.throw("invalid arguments type."));
 	}
 	object_values_func(){
 		if(env.is_obj(env.TOS())){
-			var x=env.s.pop()._datum;
-			env.s.push({"_type":"TC_JSON","_datum":Object.values(x)});
-			return;
+			try{
+				var x=env.s.pop()._datum;
+				env.s.push({"_type":"TC_JSON","_datum":Object.values(x)});
+				return;
+			}catch(e){
+				env.s.push(err.throw(e));
+				return;
+			}
 		}
 		env.s.push(err.throw("invalid arguments type."));
 	}
 	string_split_func(){
 		if(env.TOS() && env.is_string(env.TOS2())){
-			var x=env.s.pop();
-			var y=env.s.pop()._datum;
-			var z;
-			if(env.is_string(x)){
-				z=y.split(x._datum);
-			}
-			if(env.is_obj(x)){
-				z=y.split(x._datum.separator, x._datum.limit);
-			}
-			if(z){
-				env.s.push({"_type":"TC_JSON","_datum":z});
+			try{
+				var x=env.s.pop();
+				var y=env.s.pop()._datum;
+				var z;
+				if(env.is_string(x)){
+					z=y.split(x._datum);
+				}
+				if(env.is_obj(x)){
+					z=y.split(x._datum.separator, x._datum.limit);
+				}
+				if(z){
+					env.s.push({"_type":"TC_JSON","_datum":z});
+					return;
+				}
+			}catch(e){
+				env.s.push(err.throw(e));
 				return;
 			}
 		}
@@ -467,10 +517,15 @@ class NativeLib{
 	}
 	string_join_func(){
 		if(env.is_string(env.TOS()) && env.is_list(env.TOS2())){
-			var separator=env.s.pop()._datum;
-			var list=env.s.pop()._datum;
-			env.s.push({"_type":"TC_STR","_datum":list.join(separator)});
-			return;
+			try{
+				var separator=env.s.pop()._datum;
+				var list=env.s.pop()._datum;
+				env.s.push({"_type":"TC_STR","_datum":list.join(separator)});
+				return;
+			}catch(e){
+				env.s.push(err.throw(e));
+				return;
+			}
 		}
 		env.s.push(err.throw("invalid arguments type."));
 	}
@@ -632,19 +687,31 @@ class NativeLib{
 	}
 	included_func(){
 		if(env.is_string(env.TOS())){
-			const arg= env.s.pop();
-			var x = loadfile.loadsync(arg._datum);
-			eval.eval(x);
-			return;
+			try{
+				const arg= env.s.pop()._datum;
+				const filename = loadfile.resolve_path(arg);
+				var x = loadfile.loadsync(filename);
+				eval.eval(x);
+				return;
+			}catch(e){
+				env.s.push(err.throw(e));
+				return;
+			}
 		}
 		env.s.push(err.throw("invalid arguments type"));
 	}
 	file_slurp_func(){
 		if(env.is_string(env.TOS())){
-			const arg= env.s.pop();
-			var x = loadfile.loadsync(arg._datum);
-			env.s.push({"_type":"TC_STR","_datum":x});
-			return;
+			try{
+				const arg= env.s.pop()._datum;
+				const filename = loadfile.resolve_path(arg);
+				var x = loadfile.loadsync(filename);
+				env.s.push({"_type":"TC_STR","_datum":x});
+				return;
+			}catch(e){
+				env.s.push(err.throw(e));
+				return;
+			}
 		}
 		env.s.push(err.throw("invalid arguments type"));
 	}
@@ -662,10 +729,16 @@ class NativeLib{
 	}
 	require_js_func(){
 		if(env.TOS() && env.TOS()._type == 'TC_STR'){
-			var x=env.s.pop()._datum;
-			var js=require(x);
-			env.s.push({"_type":env.guess_type(js),"_datum":js});
-			return;
+			try{
+				const arg= env.s.pop()._datum;
+				const filename = loadfile.resolve_path(arg);
+				var js=require(filename);
+				env.s.push({"_type":env.guess_type(js),"_datum":js});
+				return;
+			}catch(e){
+				env.s.push(err.throw(e));
+				return;
+			}
 		}
 		env.s.push(err.throw('invalid request-js argument type'));
 	}

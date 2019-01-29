@@ -11,6 +11,7 @@ const force = require('./src/force-lang');
 
 program
   .version(pkg.version)
+  .usage('[options] <file ...>')
   .option('-f, --file [file]', 'input from file')
   .option('-x, --exec [text]', 'input from string')
   .option('-i, --shell', 'run repl')
@@ -54,6 +55,11 @@ if(program.shell){
 		force.exec(line);
 	});
 }
+
+	if(program.args[0]){
+		log.info(program.args[0]);
+		await force.eval_file(program.args[0]);
+	}
 
 if(program.stdin){
 	//log.info(process.stdin);

@@ -9,7 +9,7 @@ class Force {
 
 	constructor(){
 		env.set('os:cwd',{_type: 'TC_STR', _datum: process.cwd()}, 'TC_VAR');
-		env.set('os:argv',{_type: 'TC_STR', _datum: process.argv}, 'TC_VAR');
+		env.set('os:argv',{_type: 'TC_JSON', _datum: process.argv}, 'TC_VAR');
 		env.set('os:__dirname',{_type: 'TC_STR', _datum: __dirname}, 'TC_VAR');
 		env.set('os:bin',{_type: 'TC_STR', _datum: ''}, 'TC_VAR');
 	}

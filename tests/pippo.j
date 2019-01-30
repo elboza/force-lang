@@ -1,6 +1,6 @@
-#!/Users/drugo/my_closet/src/js/force-lang/force
+#!/usr/local/bin/force
 
-"ciao pippo !!!"
+"Hi !!!"
 .
 
 os:__dirname @ .

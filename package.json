@@ -11,7 +11,7 @@
     "./doc/force-lang.1"
   ],
   "scripts": {
-    "test": "./force -f tests/unit_tests.j",
+    "test": "./force tests/unit_tests.j",
     "postinstall": "marked-man README.md > doc/force.1 && marked-man README.md > doc/force-lang.1"
   },
   "author": "Fernando Iazeolla <fernando.iazeolla@gmail.com>",

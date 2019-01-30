@@ -12,7 +12,7 @@ const force = require('./src/force-lang');
 program
   .version(pkg.version)
   .usage('[options] <file ...>')
-  .option('-f, --file [file]', 'input from file')
+  //.option('-f, --file [file]', 'input from file')
   .option('-x, --exec [text]', 'input from string')
   .option('-i, --shell', 'run repl')
   .option('-s, --stdin', 'input from stdin')
@@ -25,7 +25,6 @@ if(program.file){
 		log.error('no file given.');
 		process.exit(1);
 	}
-	log.info(program.file);
 	await force.eval_file(program.file);
 }
 
@@ -34,7 +33,6 @@ if(program.exec){
 		log.error('no input given.');
 		process.exit(1);
 	}
-	//log.info(program.exec);
 	force.exec(program.exec);
 }
 if(program.shell){
@@ -51,13 +49,11 @@ if(program.shell){
 	rl.prompt();
 
 	rl.on('line', (line) => {
-		//log.info(line);
 		force.exec(line);
 	});
 }
 
 	if(program.args[0]){
-		log.info(program.args[0]);
 		await force.eval_file(program.args[0]);
 	}
 

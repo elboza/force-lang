@@ -1,4 +1,4 @@
-#!/Users/drugo/my_closet/src/js/force-lang/force -f
+#!/usr/local/bin/force
 
 : xx2 33 44 ;
 xx2

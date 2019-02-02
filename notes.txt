@@ -16,6 +16,8 @@ a:!          *******
 m:@          *******
 m:!          *******
 a:each
+a:shift
+a:unshift
 a:length     *******
 f:slurp      *******
 net:request  *******

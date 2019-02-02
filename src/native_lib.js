@@ -937,6 +937,52 @@ class NativeLib{
 			env.s.push(err.throw(e));
 		}
 	}
+	array_shift_func(){
+		try{
+			if(env.is_list(env.TOS())){
+				let value = env.s.pop()._datum.shift();
+				const xval=env.adj_bool_val(value);
+				env.s.push({"_type":env.guess_type(value), "_datum":xval});
+				return;
+			}
+			env.s.push(err.throw('invalid operation. TOS is not an list'));
+		}catch(e){
+			env.s.push(err.throw(e));
+		}
+	}
+	array_unshift_func(){
+		try{
+			if(env.TOS() && env.is_list(env.TOS2())){
+				let value = env.s.pop()._datum;
+				let array = env.s.pop()._datum;
+				array.unshift(value);
+				env.s.push({"_type":"TC_JSON", "_datum":array});
+				return;
+			}
+			env.s.push(err.throw('invalid operation. TOS2 is not an list'));
+		}catch(e){
+			env.s.push(err.throw(e));
+		}
+	}
+	array_each_func(){
+		try{
+			if(env.TOS() && env.TOS()._type=='TC_LAMBDA_FUNC' && env.is_list(env.TOS2())){
+				let funcall = env.s.pop()._datum;
+				let array = env.s.pop()._datum;
+				//Vx€array, !!funcall
+				while(array.length >0 ){
+					var value = array.shift();
+					const xval=env.adj_bool_val(value);
+					env.s.push({"_type":env.guess_type(value), "_datum":xval});
+					eval.eval_parsed(funcall);
+				}
+				return;
+			}
+			env.s.push(err.throw('invalid arguments. TOS should be a LAMBDA function and TOS2 should be a list'));
+		}catch(e){
+			env.s.push(err.throw(e));
+		}
+	}
 	populate_repl(){
 		env.set('handle',{_type: 'TC_NATIVE_FUNC', _datum: this.handle_repl_func}, 'TC_WORD');
 	}
@@ -1011,6 +1057,9 @@ class NativeLib{
 		env.set('rx:match',{_type: 'TC_NATIVE_FUNC', _datum: this.regex_match_func}, 'TC_WORD');
 		env.set('rx:search',{_type: 'TC_NATIVE_FUNC', _datum: this.regex_search_func}, 'TC_WORD');
 		env.set('rx:replace',{_type: 'TC_NATIVE_FUNC', _datum: this.regex_replace_func}, 'TC_WORD');
+		env.set('a:shift',{_type: 'TC_NATIVE_FUNC', _datum: this.array_shift_func}, 'TC_WORD');
+		env.set('a:unshift',{_type: 'TC_NATIVE_FUNC', _datum: this.array_unshift_func}, 'TC_WORD');
+		env.set('a:each',{_type: 'TC_NATIVE_FUNC', _datum: this.array_each_func}, 'TC_WORD');
 	}
 };
 

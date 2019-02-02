@@ -169,4 +169,7 @@ rx:exec       \ ( s srx -- j ) or (s j -- j )
 rx:match      \ ( s srx -- j ) or (s j -- j )
 rx:search     \ ( s srx -- n ) or (s j -- n )
 rx:replace    \ ( s s srx -- s ) or (s s j -- s )
+a:shift       \ ( a -- x )
+a:unshift     \ ( a x -- a )
+a:each        \ ( a f -- )
 ```

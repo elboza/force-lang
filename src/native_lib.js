@@ -18,6 +18,7 @@ class NativeLib{
 			"_datum":func_name
 		}
 	}
+
 	test_func(){
 		log.info('...hai detto pippo?');
 	}
@@ -983,6 +984,135 @@ class NativeLib{
 			env.s.push(err.throw(e));
 		}
 	}
+	parse_args_func(){
+		try{
+			if(env.is_list(env.TOS())){
+				const rx_double_dash = /^\-\-[a-zA-Z0-9]+/;
+				const rx_single_dash = /^\-[a-zA-Z0-9]+/;
+				const rx_no_dash = /^[^\-]/;
+				const rx_two_dashes = /^\-\-/;
+				let args = {argv:[]};
+				const params_data = env.s.pop()._datum;
+				//log.info(params_data);
+				let param_found=false;
+				let test_col, is_dash;
+				let argv = env.lookup('os:argv')._datum._datum;
+				argv.shift(); argv.shift(); argv.shift();
+				//log.info(argv);
+				while(argv.length > 0) {
+					let item = argv.shift();
+					is_dash=0;
+					// log.info(item);
+					// if(rx_double_dash.test(item)){
+					// 	test_col= 1;
+					// 	is_dash = true;
+					// }
+					// if(rx_single_dash.test(item)) {
+					// 	test_col = 0;
+					// 	is_dash = true;
+					// }
+
+					// if(is_dash) {
+					// 	param_found = false;
+					// 	for(var param_item of params_data){
+					// 		log.info(param_item[test_col]);
+					// 		if(param_item[test_col]=== (test_col === 0)? item.match(rx_single_dash)[0] : item.match(rx_double_dash[0])){
+					// 			log.info('d: ',param_item);
+					// 			param_found = true;
+					// 			break;
+					// 		}
+					// 	}
+					// 	//if ! invalid parameter
+					// 	if(!param_found) log.info(`invalid parameter ${item}`);
+					// }
+
+					if(rx_double_dash.test(item)){
+						param_found = false;
+						for(var param_item of params_data){
+							if(param_item[1]===item.match(rx_double_dash)[0]){
+								//log.info('dd: ',param_item);
+								param_found = true;
+								switch(param_item[2]){
+									case 'y':
+										//log.info('ha param');
+										if(argv[0] && rx_no_dash.test(argv[0])){
+											args[param_item[1].replace(rx_two_dashes,'')] = argv.shift();
+										} else {
+											log.info(`error, parameter ${item} needs value...`);
+											//error needs param...
+										}
+										break;
+									case 'n':
+										//log.info('no param');
+										args[param_item[1].replace(rx_two_dashes,'')] = true;
+										break;
+									case '?':
+										//log.info('opt param');
+										if(argv[0] && rx_no_dash.test(argv[0])){
+											args[param_item[1].replace(rx_two_dashes,'')] = argv[0];
+										}else{
+											args[param_item[1].replace(rx_two_dashes,'')] = true;
+										}
+										break;
+									default:
+
+									break;
+								}
+								break;
+							}
+						}
+						//if ! invalid parameter
+						if(!param_found) log.info(`invalid parameter ${item}`);
+					}else if(rx_single_dash.test(item)) {
+						param_found= false;
+						for(var param_item of params_data){
+							if(param_item[0]===item.match(rx_single_dash)[0]){
+								//log.info('sd: ',param_item);
+								param_found = true;
+								switch(param_item[2]){
+									case 'y':
+										//log.info('ha param');
+										if(argv[0] && rx_no_dash.test(argv[0])){
+											args[param_item[1].replace(rx_two_dashes,'')] = argv.shift();
+										} else {
+											log.info(`error, parameter ${item} needs value...`);
+											//error needs param...
+										}
+										break;
+									case 'n':
+										//log.info('no param');
+										args[param_item[1].replace(rx_two_dashes,'')] = true;
+										break;
+									case '?':
+										//log.info('opt param');
+										if(argv[0] && rx_no_dash.test(argv[0])){
+											args[param_item[1].replace(rx_two_dashes,'')] = argv[0];
+										}else{
+											args[param_item[1].replace(rx_two_dashes,'')] = true;
+										}
+										break;
+									default:
+
+									break;
+								}
+								break;
+							}
+						}
+						if(!param_found) log.info(`invalid parameter ${item}`);
+					}else {
+						//else{
+						//normal argv...
+						args.argv.push(item);
+					}
+				}
+				log.info(args);
+				return;
+			}
+			env.s.push(err.throw('invalid arguments. TOS should be a list'));
+		}catch(e){
+			env.s.push(err.throw(e));
+		}
+	}
 	populate_repl(){
 		env.set('handle',{_type: 'TC_NATIVE_FUNC', _datum: this.handle_repl_func}, 'TC_WORD');
 	}
@@ -1060,6 +1190,7 @@ class NativeLib{
 		env.set('a:shift',{_type: 'TC_NATIVE_FUNC', _datum: this.array_shift_func}, 'TC_WORD');
 		env.set('a:unshift',{_type: 'TC_NATIVE_FUNC', _datum: this.array_unshift_func}, 'TC_WORD');
 		env.set('a:each',{_type: 'TC_NATIVE_FUNC', _datum: this.array_each_func}, 'TC_WORD');
+		env.set('os:parse-args',{_type: 'TC_NATIVE_FUNC', _datum: this.parse_args_func}, 'TC_WORD');
 	}
 };
 

@@ -11,11 +11,10 @@ $ npm install force-lang -g
 
 $ force -h
 
-Usage: force [options]
+Usage: force [options] <file>
 
 Options:
   -V, --version      output the version number
-  -f, --file [file]  input from file
   -x, --exec [text]  input from string
   -i, --shell        run repl
   -s, --stdin        input from stdin
@@ -26,7 +25,7 @@ Options:
 ```text
 $ cat example.j
 
-#!/usr/local/bin/force -f
+#!/usr/local/bin/force
 
 2 2 + .
 ```

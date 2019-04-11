@@ -9,3 +9,9 @@ os:argv @ .
 ['-k','--kkk','?']
 ]
 os:parse-args
+
+// run with:
+// ./cli-args.j -x 99
+// the putput will be:
+// ["/usr/local/bin/node","/usr/local/bin/force","./cli-args.j","-x","99"]
+// { argv: [], xray: '99' }

@@ -40,6 +40,8 @@ if(program.shell){
 
 	force.populate_repl();
 
+	var buffered_line = '';
+
 	const rl = readline.createInterface({
   	input: process.stdin,
   	output: process.stdout,
@@ -49,7 +51,20 @@ if(program.shell){
 	rl.prompt();
 
 	rl.on('line', (line) => {
-		force.exec(line);
+		if(line[line.length-1]==='\\'){
+			buffered_line += line.substr(0,line.length-1) +' ';
+			rl.setPrompt('... ');
+		} else {
+			if(buffered_line!=='') {
+				buffered_line += line;
+				force.exec(buffered_line);
+				buffered_line='';
+			}else {
+				force.exec(line);
+			}
+			rl.setPrompt('> ');
+		}
+		rl.prompt();
 	});
 }
 

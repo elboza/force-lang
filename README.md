@@ -45,6 +45,8 @@ var x = '2 2 + .';
   force.exec(x);
 })();
 ```
+## repl multiline
+in the force-lang repl `force -i` you can input multiline by appending `\` (backslash) at the end of the current line before enter
 
 ## language constructs
 ```text

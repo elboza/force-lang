@@ -1,4 +1,4 @@
-.TH "FORCE" "" "January 2019" "" ""
+.TH "FORCE" "" "April 2019" "" ""
 .SH "NAME"
 \fBForce\fR
 .SS (force\-lang)
@@ -14,11 +14,10 @@ $ npm install force\-lang \-g
 
 $ force \-h
 
-Usage: force [options]
+Usage: force [options] <file>
 
 Options:
   \-V, \-\-version      output the version number
-  \-f, \-\-file [file]  input from file
   \-x, \-\-exec [text]  input from string
   \-i, \-\-shell        run repl
   \-s, \-\-stdin        input from stdin
@@ -31,7 +30,7 @@ Options:
 .nf
 $ cat example\.j
 
-#!/usr/local/bin/force \-f
+#!/usr/local/bin/force
 
 2 2 + \.
 .fi
@@ -56,6 +55,9 @@ var x = '2 2 + \.';
 })();
 .fi
 .RE
+.SH repl multiline
+.P
+in the force\-lang repl \fBforce \-i\fP you can input multiline by appending \fB\\\fP (backslash) at the end of the current line before enter
 .SH language constructs
 .P
 .RS 2
@@ -182,6 +184,9 @@ rx:exec       \\ ( s srx \-\- j ) or (s j \-\- j )
 rx:match      \\ ( s srx \-\- j ) or (s j \-\- j )
 rx:search     \\ ( s srx \-\- n ) or (s j \-\- n )
 rx:replace    \\ ( s s srx \-\- s ) or (s s j \-\- s )
+a:shift       \\ ( a \-\- x )
+a:unshift     \\ ( a x \-\- a )
+a:each        \\ ( a f \-\- )
 .fi
 .RE
 

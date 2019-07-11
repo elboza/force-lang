@@ -74,6 +74,15 @@ if(program.shell){
 
 if(program.stdin){
 	//log.info(process.stdin);
+	var rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+  terminal: false
+});
+
+rl.on('line', function(line){
+    force.exec(line);
+})
 }
 
 })();

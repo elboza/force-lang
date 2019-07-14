@@ -11,13 +11,13 @@ $ npm install force-lang -g
 
 $ force -h
 
-Usage: force [options] <file>
+Usage: force [options] <file ...>
 
 Options:
   -V, --version      output the version number
   -x, --exec [text]  input from string
   -i, --shell        run repl
-  -s, --stdin        input from stdin
+  -s, --stdin        input from stdin (default action)
   -h, --help         output usage information
 ```
 

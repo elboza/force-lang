@@ -49,6 +49,15 @@ var x = '2 2 + .';
   force.exec(x);
 })();
 ```
+or using sync functions:
+```javascript
+const force = require ('force-lang');
+
+var x = '2 2 + .';
+
+force.load_lib_sync();
+force.exec(x);
+```
 ## repl multiline
 in the force-lang repl `force -i` you can input multiline by appending `\` (backslash) at the end of the current line before enter
 

@@ -17,9 +17,16 @@ class Force {
 	async load_lib(){
 		await eval.load_lib();
 	}
+	load_lib_sync(){
+		eval.load_lib();
+	}
 	async eval_file(filename){
 		env.set('os:bin',{_type: 'TC_STR', _datum: filename}, 'TC_VAR');
 		eval.eval(await loadfile.load(filename));
+	}
+	eval_file_sync(filename){
+		env.set('os:bin',{_type: 'TC_STR', _datum: filename}, 'TC_VAR');
+		eval.eval(loadfile.loadsync(filename));
 	}
 	exec(script){
 		eval.eval(script);

@@ -62,6 +62,19 @@ var x = '2 2 + \.';
 })();
 .fi
 .RE
+.P
+or using sync functions:
+.P
+.RS 2
+.nf
+const force = require ('force\-lang');
+
+var x = '2 2 + \.';
+
+force\.load_lib_sync();
+force\.exec(x);
+.fi
+.RE
 .SH repl multiline
 .P
 in the force\-lang repl \fBforce \-i\fP you can input multiline by appending \fB\\\fP (backslash) at the end of the current line before enter

@@ -21,6 +21,11 @@ class Eval{
 		this.eval(x);
 	}
 
+	load_lib_sync(){
+		var x = loadfile.loadsync(__dirname + '/lib.j');
+		this.eval(x);
+	}
+
 	see_func(func_name){
 		var x=env.lookup(func_name);
 		if(!x){

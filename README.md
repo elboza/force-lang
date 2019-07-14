@@ -29,6 +29,10 @@ $ cat example.j
 
 2 2 + .
 ```
+## using force in shell
+```bash
+echo "2 2 + ."|force
+```
 ## using Force as node module
 
 ```bash

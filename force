@@ -15,10 +15,12 @@ program
   //.option('-f, --file [file]', 'input from file')
   .option('-x, --exec [text]', 'input from string')
   .option('-i, --shell', 'run repl')
-  .option('-s, --stdin', 'input from stdin')
+  .option('-s, --stdin', 'input from stdin (default action)')
   .parse(process.argv);
 
 await force.load_lib();
+
+if(! (program.file || program.shell || program.exec || program.args[0])) program.stdin = true;
 
 if(program.file){
 	if(typeof(program.file)!=='string'){

@@ -143,7 +143,10 @@ class Env{
 		this.set_norm(name, val, type, where);
 	}
 	print_debug(){
-		log.info(this._dict);
+		//log.info(this._dict);
+		this._dict.forEach(item => {
+			log.info(`${item._type} ${item._name} ${item._datum._type}`);
+		});
 	}
 };
 

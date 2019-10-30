@@ -43,6 +43,9 @@ class Stack{
 			case 'TC_ERR':
 				str += ' ' + JSON.stringify(item._datum);
 				break;
+			case 'TC_PROMISE':
+				str += ' ' + item._datum;
+				break;
 			default:
 				break;
 		}

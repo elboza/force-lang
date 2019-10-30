@@ -151,6 +151,7 @@ class NativeLib{
 			case'TC_NUM':
 			case 'TC_STR':
 			case 'TC_JSON':
+			case 'TC_PROMISE':
 				varx._datum = val;
 				//env.set(varx._name, val, varx._type, varx._where);
 				break;
@@ -169,6 +170,7 @@ class NativeLib{
 			case'TC_NUM':
 			case 'TC_STR':
 			case 'TC_JSON':
+			case 'TC_PROMISE':
 				env.s.push(varx._datum);
 				break;
 			default:
@@ -1113,6 +1115,21 @@ class NativeLib{
 			env.s.push(err.throw(e));
 		}
 	}
+	await_func(){
+		console.log(env.TOS());
+		if(env.TOS() && env.TOS()._type=== 'TC_PROMISE'){
+			try{
+				env.s.pop()._datum.then(x => {
+					env.s.push({"_type":env.guess_type(x), "_datum":x});
+				});
+				return;
+			}catch(e){
+				env.s.push(err.throw(e));
+				return;
+			}
+		}
+		env.s.push(err.throw("invalid arguments type. a Promise was expected."));
+	}
 	populate_repl(){
 		env.set('handle',{_type: 'TC_NATIVE_FUNC', _datum: this.handle_repl_func}, 'TC_WORD');
 	}
@@ -1191,6 +1208,7 @@ class NativeLib{
 		env.set('a:unshift',{_type: 'TC_NATIVE_FUNC', _datum: this.array_unshift_func}, 'TC_WORD');
 		env.set('a:each',{_type: 'TC_NATIVE_FUNC', _datum: this.array_each_func}, 'TC_WORD');
 		env.set('os:parse-args',{_type: 'TC_NATIVE_FUNC', _datum: this.parse_args_func}, 'TC_WORD');
+		env.set('await',{_type: 'TC_NATIVE_FUNC', _datum: this.await_func}, 'TC_WORD');
 	}
 };
 

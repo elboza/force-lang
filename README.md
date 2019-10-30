@@ -186,4 +186,5 @@ rx:replace    \ ( s s srx -- s ) or (s s j -- s )
 a:shift       \ ( a -- x )
 a:unshift     \ ( a x -- a )
 a:each        \ ( a f -- )
+await         \ ( p -- x )
 ```

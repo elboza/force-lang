@@ -78,6 +78,7 @@ class Env{
 				return 'TC_STR';
 				break;
 			case 'object':
+				if(e instanceof Promise) return 'TC_PROMISE';
 				return 'TC_JSON';
 				break;
 			case 'boolean':

@@ -10,7 +10,7 @@ module.exports = {
             'error',
             {
                 printWidth: 120,
-                tabWidth: 4, // reformat to 2 eventually
+                tabWidth: 2, // reformat to 2 eventually
                 useTabs: false, // default
                 semi: true, // default
                 singleQuote: true,
@@ -20,7 +20,7 @@ module.exports = {
                 arrowParens: 'avoid', // default
             },
         ],
-        indent: ['warn', 4],
+        indent: ['warn', 2],
         camelcase: [0, { properties: 'never' }],
         eqeqeq: ['error', 'always'],
         curly: ['error', 'all'],

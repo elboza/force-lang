@@ -119,7 +119,7 @@ class Env{
 		let index = this._dict.map(function(e) { return e._name; }).indexOf(name);
 		//log.info(index);
 		//log.info(this._dict[index]);
-		if(index > 0) {
+		if(index >= 0) {
 			this._dict.splice(index,1);
 		} else {
 			throw("word not found.");

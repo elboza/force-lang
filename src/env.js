@@ -117,9 +117,13 @@ class Env{
 	}
 	delete_norm(name){
 		let index = this._dict.map(function(e) { return e._name; }).indexOf(name);
-		log.info(index);
-		log.info(this._dict[index]);
-		this._dict.slice(index,1);
+		//log.info(index);
+		//log.info(this._dict[index]);
+		if(index > 0) {
+			this._dict.splice(index,1);
+		} else {
+			throw("word not found.");
+		}
 	}
 	delete(name){
 		return this.delete_norm(name);
@@ -132,16 +136,21 @@ class Env{
 		if(x=this.lookup(name)){
 			x._datum = val;
 		}else{
-			x=new dict_obj();
+			this.add_norm(name, val, type, where);
+		}
+	}
+	add_norm(name, val, type, where){
+		var x;
+		x=new dict_obj();
 			x._type = type;
 			x._name = name;
 			x._datum = val;
 			x._where = where;
 			this._dict.unshift(x);
-		}
 	}
 	set(name, val, type, where){
-		this.set_norm(name, val, type, where);
+		this.add_norm(name, val, type, where);
+		//this.set_norm(name, val, type, where);
 	}
 	print_debug(){
 		//log.info(this._dict);

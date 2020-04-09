@@ -24,7 +24,7 @@
     "bunny-logger": "0.0.2",
     "commander": "^2.19.0",
     "json5": "^2.1.0",
-    "marked-man": "^0.2.1",
+    "marked-man": "^0.7.0",
     "request": "^2.88.0",
     "request-promise-native": "^1.0.5",
     "sync-request": "^6.0.0"
@@ -36,5 +36,8 @@
     "force-lang",
     "force"
   ],
-  "homepage": "https://github.com/elboza/force-lang.git"
+  "homepage": "https://github.com/elboza/force-lang.git",
+  "devDependencies": {
+    "eslint": "^6.8.0"
+  }
 }

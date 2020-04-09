@@ -58,6 +58,9 @@ class Read{
 	is_string(e){
 		return (e == '"')? true : false ;
 	}
+	is_string_single_quote(e){
+		return (e == "'")? true : false ;
+	}
 	is_json(e){
 		return (e === '{' || e === '[')? true : false ;
 	}
@@ -94,6 +97,42 @@ class Read{
 		try{
 			if(this.is_string(e.peek())) e.advance();
 			while(!this.is_string(e.peek())){
+				if(e.peek()=='\\'){
+					switch(e.lookahead(1)){
+						case 'n':
+							str += '\n';
+							e.advance();e.advance();
+							break;
+						case 'r':
+							str += '\r';
+							e.advance();e.advance();
+							break;
+						case '\\':
+							str += '\\';
+							e.advance();e.advance();
+							break;
+						case '"':
+							str += '"';
+							e.advance();e.advance();
+							break;
+						default:
+							str += e.advance();
+							break;
+					}
+				}else
+				str += e.advance();
+			}
+			e.advance();
+		}catch(e){
+
+		}
+		return str;
+	}
+	eat_string_single_quote(e){
+		var str = '';
+		try{
+			if(this.is_string_single_quote(e.peek())) e.advance();
+			while(!this.is_string_single_quote(e.peek())){
 				if(e.peek()=='\\'){
 					switch(e.lookahead(1)){
 						case 'n':
@@ -266,6 +305,7 @@ class Read{
 			if(this.is_eof(e.peek())) return false;
 			if(this.is_num(e)) return {"_type":"TC_NUM", "_where": this.where(e), "_datum": this.eat_number(e)};
 			if(this.is_string(e.peek())) return {"_type":"TC_STR", "_where": this.where(e), "_datum": this.eat_string(e)};
+			if(this.is_string_single_quote(e.peek())) return {"_type":"TC_STR", "_where": this.where(e), "_datum": this.eat_string_single_quote(e)};
 			if(this.is_json(e.peek())) return {"_type":"TC_JSON", "_where": this.where(e), "_datum": this.eat_json(e)};
 			if(this.is_bool(e)) return {"_type":"TC_BOOL", "_where": this.where(e), "_datum": this.eat_bool(e)};
 			return {"_type":"TC_WORD", "_where": this.where(e), "_datum": this.eat_word(e)};

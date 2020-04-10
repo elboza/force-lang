@@ -66,7 +66,7 @@ in the force-lang repl `force -i` you can input multiline by appending `\` (back
 ( ... )       \ lambda func
 example: ( 1 2 + )
 
-see xxx       \ see function definition
+see ...       \ see function definition
 example: see cr
 
 ... if ... else ... then
@@ -75,7 +75,7 @@ example: see cr
               \ then ( -- )
 example: T if "no" . else "yes" . then
 
-... begin ... repeat ... while
+... begin ...while  ...repeat
               \ begin ( -- )
               \ repeat ( -- )
               \ while ( b -- )
@@ -93,12 +93,44 @@ endcase
 example:
 33
 case
- "foo" =  of "it's foo string" .           endof
- 33 =     of "it's 33 number !!" .         endof
- 10 <     of "it's a number minor fo 10" . endof
- T        of "default action..."           endof
+ dup "foo" =  of "it's foo string" .           endof
+ dup 33 =     of "it's 33 number !!" .         endof
+ dup 10 <     of "it's a number minor fo 10" . endof
+ T            of "default action..."           endof
 endcase
 \ ( 33 is not consumed has to be removed manually )
+```
+## functions prefix
+functions name can be prefixed to give more meaningful name to the function and the type it act on.
+For example `@` is applied to normal variables to get values, `a:@` applies to array, `m:@` applies to maps (hash).
+The main prefixes are:
+```text
+n:    for numbers
+s:    for string
+j:    for json
+net:  for network
+a:    for array
+m:    for maps (hash)
+f:    for file
+G:    for Globals
+```
+## functions signatures
+in the comments of the stadard lib section is described the stack consumption and the type that the function requires.
+```text
+o       object (map)
+a       array
+b       boolean
+n       number
+s       string
+j       json
+srx     string regex
+x       can be all types
+y       can be all types
+z       can be all types
+lambda  lambda function
+f_js    javascript function
+p       promise
+v       variable name
 ```
 
 ## standard lib

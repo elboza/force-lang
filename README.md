@@ -113,6 +113,7 @@ a:    for array
 m:    for maps (hash)
 f:    for file
 G:    for Globals
+os:   for OS env
 ```
 ## functions signatures
 in the comments of the stadard lib section is described the stack consumption and the type that the function requires.
@@ -219,4 +220,19 @@ a:shift       \ ( a -- x )
 a:unshift     \ ( a x -- a )
 a:each        \ ( a f -- )
 await         \ ( p -- x )
+os:argv       \ ( -- a )
+os:parse-args \ ( -- o )
 ```
+## functions descriptions
+
+### handle \ ( e -- )
+This function is called every time there is an error object on top of the stack.
+You can override this function with you own to provide a custom error handling. This can be permanent or temporary (by deleting the latest definition with `'handle' G:delete`).
+The first thing that your custom handler function should do is to remove the error object from the TOS. This can be done by eighter removing it (`drop` or print `.`) or by adding another item on top of it (in case you want to preserve it for future use).
+
+### throw \ ( s -- ) or ( o -- )
+This function throws an error object on TOS and will trigger the current `handle` function.
+you can throw a string or an object.
+
+### G:delete \ ( s -- )
+This function removes the latest definition of the wors from the dictionary list restoring the previous definition if present.

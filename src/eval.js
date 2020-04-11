@@ -237,10 +237,10 @@ class Eval{
 			this.eval_parsed_step(item);
 		}
 	}
-	eval(e){
+	eval(e, filename=null){
 		var stream = read.tokenize(e);
 		var x;
-		while((x=read.read(stream))!=false){
+		while((x=read.read(stream, filename))!=false){
 			//log.info(x);
 			if(x._type == 'TC_WORD'){
 				if(x._datum == 'var'){

@@ -22,14 +22,14 @@ class Force {
 	}
 	async eval_file(filename){
 		env.set('os:bin',{_type: 'TC_STR', _datum: filename}, 'TC_VAR');
-		eval.eval(await loadfile.load(filename));
+		eval.eval(await loadfile.load(filename), filename);
 	}
 	eval_file_sync(filename){
 		env.set('os:bin',{_type: 'TC_STR', _datum: filename}, 'TC_VAR');
-		eval.eval(loadfile.loadsync(filename));
+		eval.eval(loadfile.loadsync(filename), filename);
 	}
 	exec(script){
-		eval.eval(script);
+		eval.eval(script, '<stdin>');
 	}
 	populate_repl(){
 		NativeLib.populate_repl();

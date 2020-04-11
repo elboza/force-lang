@@ -13,7 +13,9 @@ class Error {
 	}
 	print_env_stack(){
 		log.error('err stack trace ...');
-		this.env_stack.reverse().map(e => {
+		this.env_stack.reverse().filter(e => 
+			e._where.file
+		).map(e => {
 			log.error(`in '${e._datum}' ${this.where_to_str(e._where)}`);
 		});
 	}

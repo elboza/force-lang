@@ -298,8 +298,9 @@ class Read{
 	where(e){
 		return {"file":e._filename, "line":e._line, "col":e._col};
 	}
-	read(e){
+	read(e, filename=null){
 		try{
+			if(filename) {e.set_filename(filename);}
 			this.eat_whitespaces(e);
 			this.eat_comments(e);
 			if(this.is_eof(e.peek())) return false;

@@ -197,10 +197,10 @@ class Eval{
 							break;
 					}
 				}else{
-					env.s.push(err.throw(`word not found ${e.datum} ${this.where_to_str(e._where)}`));
+					env.s.push(err.throw(`word not found '${e._datum}' ${this.where_to_str(e._where)}`));
 				}	
 			}
-			if(err.require_handle(` ${e.datum} ${this.where_to_str(e._where)}`)) this.eval('handle');;
+			if(err.require_handle(` ${e._datum} ${this.where_to_str(e._where)}`)) this.eval('handle');;
 		}
 		if(this.mode == 'compile'){
 			if(e._type == 'TC_WORD'){

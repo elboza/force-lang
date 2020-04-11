@@ -181,10 +181,14 @@ class Eval{
 				if(y=env.lookup(e._datum)){
 					switch(y._datum._type){
 						case 'TC_NATIVE_FUNC':
+							err.add_stack(e);
 							y._datum._datum.call();
+							err.pop_stack();
 							break;
 						case 'TC_COMP_FUNC':
+							err.add_stack(e);
 							this.eval_parsed(y._datum._datum);
+							err.pop_stack();
 							break;
 						case 'TC_FUNC_JS':
 							//this.eval_parsed(y._datum._datum);

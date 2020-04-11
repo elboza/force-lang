@@ -1,6 +1,6 @@
 {
   "name": "force-lang",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "a modern forth lang compatible with NodeJS",
   "main": "./src/force-lang.js",
   "bin": {

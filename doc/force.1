@@ -85,7 +85,7 @@ in the force\-lang repl \fBforce \-i\fP you can input multiline by appending \fB
 ( \.\.\. )       \\ lambda func
 example: ( 1 2 + )
 
-see xxx       \\ see function definition
+see \.\.\.       \\ see function definition
 example: see cr
 
 \|\.\.\. if \.\.\. else \.\.\. then
@@ -94,7 +94,7 @@ example: see cr
               \\ then ( \-\- )
 example: T if "no" \. else "yes" \. then
 
-\|\.\.\. begin \.\.\. repeat \.\.\. while
+\|\.\.\. begin \.\.\.while  \.\.\.repeat
               \\ begin ( \-\- )
               \\ repeat ( \-\- )
               \\ while ( b \-\- )
@@ -112,12 +112,53 @@ endcase
 example:
 33
 case
- "foo" =  of "it's foo string" \.           endof
- 33 =     of "it's 33 number !!" \.         endof
- 10 <     of "it's a number minor fo 10" \. endof
- T        of "default action\.\.\."           endof
+ dup "foo" =  of "it's foo string" \.           endof
+ dup 33 =     of "it's 33 number !!" \.         endof
+ dup 10 <     of "it's a number minor fo 10" \. endof
+ T            of "default action\.\.\."           endof
 endcase
 \\ ( 33 is not consumed has to be removed manually )
+.fi
+.RE
+.SH functions prefix
+.P
+functions name can be prefixed to give more meaningful name to the function and the type it act on\.
+For example \fB@\fP is applied to normal variables to get values, \fBa:@\fP applies to array, \fBm:@\fP applies to maps (hash)\.
+The main prefixes are:
+.P
+.RS 2
+.nf
+n:    for numbers
+s:    for string
+j:    for json
+net:  for network
+a:    for array
+m:    for maps (hash)
+f:    for file
+G:    for Globals
+os:   for OS env
+.fi
+.RE
+.SH functions signatures
+.P
+in the comments of the stadard lib section is described the stack consumption and the type that the function requires\.
+.P
+.RS 2
+.nf
+o       object (map)
+a       array
+b       boolean
+n       number
+s       string
+j       json
+srx     string regex
+x       can be all types
+y       can be all types
+z       can be all types
+lambda  lambda function
+f_js    javascript function
+p       promise
+v       variable name
 .fi
 .RE
 .SH standard lib
@@ -208,6 +249,21 @@ a:shift       \\ ( a \-\- x )
 a:unshift     \\ ( a x \-\- a )
 a:each        \\ ( a f \-\- )
 await         \\ ( p \-\- x )
+os:argv       \\ ( \-\- a )
+os:parse\-args \\ ( \-\- o )
 .fi
 .RE
+.SH functions descriptions
+.SS handle \\ ( e \-\- )
+.P
+This function is called every time there is an error object on top of the stack\.
+You can override this function with you own to provide a custom error handling\. This can be permanent or temporary (by deleting the latest definition with \fB\|'handle' G:delete\fP)\.
+The first thing that your custom handler function should do is to remove the error object from the TOS\. This can be done by eighter removing it (\fBdrop\fP or print \fB\|\.\fP) or by adding another item on top of it (in case you want to preserve it for future use)\.
+.SS throw \\ ( s \-\- ) or ( o \-\- )
+.P
+This function throws an error object on TOS and will trigger the current \fBhandle\fP function\.
+you can throw a string or an object\.
+.SS G:delete \\ ( s \-\- )
+.P
+This function removes the latest definition of the wors from the dictionary list restoring the previous definition if present\.
 

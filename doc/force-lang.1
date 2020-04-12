@@ -251,6 +251,7 @@ a:each        \\ ( a f \-\- )
 await         \\ ( p \-\- x )
 os:argv       \\ ( \-\- a )
 os:parse\-args \\ ( \-\- o )
+s:format      \\ ( s a \-\- a )
 .fi
 .RE
 .SH functions descriptions
@@ -266,4 +267,9 @@ you can throw a string or an object\.
 .SS G:delete \\ ( s \-\- )
 .P
 This function removes the latest definition of the wors from the dictionary list restoring the previous definition if present\.
+.SS s:format \\ ( s a \-\- s )
+.P
+This function if an implementation of vsprintf\. It takes a format string (fmt) and an args list [args] and returns a formatted string (char\fI vsprintf(\fRfmt, *args)):
+example: 
+\fB"the number %d and the string %s" [22, "hey"] f:format \.\fP
 

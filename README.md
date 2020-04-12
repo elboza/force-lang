@@ -177,7 +177,7 @@ a:@           \ ( a n -- x )
 a:!           \ ( a n x -- a )
 m:@           \ ( o s -- x )
 m:!           \ ( o s x -- a )
-a:length      \ ( a -- n )
+a:len         \ ( a -- n )
 a:push        \ ( a x -- a )
 a:pop         \ ( a -- x )
 m:keys        \ ( o -- a )
@@ -223,6 +223,7 @@ await         \ ( p -- x )
 os:argv       \ ( -- a )
 os:parse-args \ ( -- o )
 s:format      \ ( s a -- a )
+s:len         \ ( s -- n )
 ```
 ## functions descriptions
 

@@ -1144,6 +1144,19 @@ class NativeLib{
 		}
 		env.s.push(err.throw("invalid arguments type. a Promise was expected."));
 	}
+	string_length_func(){
+		if(env.TOS() && env.is_string(env.TOS())){
+			try{
+				const str=env.s.pop()._datum;
+				env.s.push({"_type":"TC_NUM", "_datum":str.length});
+				return;
+			}catch(e){
+				env.s.push(err.throw(e));
+				return;
+			}
+		}
+		env.s.push(err.throw("invalid arguments type. a Promise was expected."));
+	}
 	populate_repl(){
 		env.set('handle',{_type: 'TC_NATIVE_FUNC', _datum: this.handle_repl_func}, 'TC_WORD');
 	}
@@ -1190,7 +1203,7 @@ class NativeLib{
 		env.set('a:!',{_type: 'TC_NATIVE_FUNC', _datum: this.array_set_at_func}, 'TC_WORD');
 		env.set('m:@',{_type: 'TC_NATIVE_FUNC', _datum: this.object_at_func}, 'TC_WORD');
 		env.set('m:!',{_type: 'TC_NATIVE_FUNC', _datum: this.object_set_at_func}, 'TC_WORD');
-		env.set('a:length',{_type: 'TC_NATIVE_FUNC', _datum: this.array_length_func}, 'TC_WORD');
+		env.set('a:len',{_type: 'TC_NATIVE_FUNC', _datum: this.array_length_func}, 'TC_WORD');
 		env.set('a:push',{_type: 'TC_NATIVE_FUNC', _datum: this.array_push_func}, 'TC_WORD');
 		env.set('a:pop',{_type: 'TC_NATIVE_FUNC', _datum: this.array_pop_func}, 'TC_WORD');
 		env.set('m:keys',{_type: 'TC_NATIVE_FUNC', _datum: this.object_keys_func}, 'TC_WORD');
@@ -1224,6 +1237,7 @@ class NativeLib{
 		env.set('os:parse-args',{_type: 'TC_NATIVE_FUNC', _datum: this.parse_args_func}, 'TC_WORD');
 		env.set('await',{_type: 'TC_NATIVE_FUNC', _datum: this.await_func}, 'TC_WORD');
 		env.set('s:format',{_type: 'TC_NATIVE_FUNC', _datum: this.string_format_func}, 'TC_WORD');
+		env.set('s:len',{_type: 'TC_NATIVE_FUNC', _datum: this.string_length_func}, 'TC_WORD');
 	}
 };
 

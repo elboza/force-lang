@@ -7,6 +7,7 @@ const err = require('./error');
 const eval = require('./eval');
 const loadfile = require('./load-file');
 const obj_utils = require('./obj_utils');
+const vsprintf = require('format').vsprintf;
 
 class NativeLib{
 	constructor(){
@@ -1116,12 +1117,25 @@ class NativeLib{
 		}
 	}
 	await_func(){
-		console.log(env.TOS());
 		if(env.TOS() && env.TOS()._type=== 'TC_PROMISE'){
 			try{
 				env.s.pop()._datum.then(x => {
 					env.s.push({"_type":env.guess_type(x), "_datum":x});
 				});
+				return;
+			}catch(e){
+				env.s.push(err.throw(e));
+				return;
+			}
+		}
+		env.s.push(err.throw("invalid arguments type. a Promise was expected."));
+	}
+	string_format_func(){
+		if(env.TOS() && env.TOS2() && env.is_string(env.TOS2()) && env.is_list(env.TOS())){
+			try{
+				const args_list=env.s.pop()._datum;
+				const fmt=env.s.pop()._datum;
+				env.s.push({"_type":"TC_STR", "_datum":vsprintf(fmt,args_list)});
 				return;
 			}catch(e){
 				env.s.push(err.throw(e));
@@ -1209,6 +1223,7 @@ class NativeLib{
 		env.set('a:each',{_type: 'TC_NATIVE_FUNC', _datum: this.array_each_func}, 'TC_WORD');
 		env.set('os:parse-args',{_type: 'TC_NATIVE_FUNC', _datum: this.parse_args_func}, 'TC_WORD');
 		env.set('await',{_type: 'TC_NATIVE_FUNC', _datum: this.await_func}, 'TC_WORD');
+		env.set('s:format',{_type: 'TC_NATIVE_FUNC', _datum: this.string_format_func}, 'TC_WORD');
 	}
 };
 

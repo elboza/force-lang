@@ -222,6 +222,7 @@ a:each        \ ( a f -- )
 await         \ ( p -- x )
 os:argv       \ ( -- a )
 os:parse-args \ ( -- o )
+s:format      \ ( s a -- a )
 ```
 ## functions descriptions
 
@@ -236,3 +237,10 @@ you can throw a string or an object.
 
 ### G:delete \ ( s -- )
 This function removes the latest definition of the wors from the dictionary list restoring the previous definition if present.
+
+### s:format \ ( s a -- s )
+This function if an implementation of vsprintf. It takes a format string (fmt) and an args list [args] and returns a formatted string (char* vsprintf(*fmt, *args)):
+example: 
+`"the number %d and the string %s" [22, "hey"] f:format .`
+
+

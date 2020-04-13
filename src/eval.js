@@ -63,6 +63,39 @@ class Eval{
 		str += 'at ' + where.line +','+ where.col;
 		return str;
 	}
+	eval_lambda(stream, list) {
+		this.mode = 'compile';
+		var y;
+		var body = [];
+		//var func_name = read.read(stream);
+		var level=0;
+		var list_copy=list;
+		if(list) {
+			while(y=list_copy.shift()){
+				if(y._datum=='(') level++;
+				if(y._datum==')') {
+					if(level==0) {
+						this.mode = 'interpret'; break;
+					}
+					level--;
+				}
+				body.push(y);
+			}		
+		} else {
+			while((y=read.read(stream))!=false){
+				if(y._datum=='(') level++;
+				if(y._datum==')') {
+					if(level==0) {
+						this.mode = 'interpret'; break;
+					}
+					level--;
+				}
+				body.push(y);
+			}
+		}
+		env.s.push({_type: 'TC_LAMBDA_FUNC', _datum: body});
+		return list_copy;
+	}
 	eval_if(stream, list){
 		//log.info('if.:.');
 		var y;
@@ -220,8 +253,11 @@ class Eval{
 		var list_copy=JSON.parse(JSON.stringify(e));
 		//for(var item of e){
 		while(item=list_copy.shift()){
+			if(item._datum == '('){
+					list_copy=this.eval_lambda(null,list_copy);
+					continue;
+				}
 			if(item._datum == 'if'){
-					//log.info('if.:.');
 					list_copy=this.eval_if(null,list_copy);
 					continue;
 				}
@@ -261,23 +297,7 @@ class Eval{
 					continue;
 				}
 				if(x._datum == '('){
-					this.mode = 'compile';
-					var y;
-					var body = [];
-					//var func_name = read.read(stream);
-					var level=0;
-					while((y=read.read(stream))!=false){
-						if(y._datum=='(') level++;
-						if(y._datum==')') {
-							if(level==0) {
-								this.mode = 'interpret'; break;
-							}
-							level--;
-						}
-						body.push(y);
-					}
-					//env.set(func_name._datum, {_type: 'TC_LAMBDA_FUNC', _datum: body}, 'TC_LAMBDA_FUNC', func_name._where);
-					env.s.push({_type: 'TC_LAMBDA_FUNC', _datum: body})
+					this.eval_lambda(stream);
 					continue;
 				}
 				if(x._datum == 'see'){

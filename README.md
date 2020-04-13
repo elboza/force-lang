@@ -63,6 +63,9 @@ in the force-lang repl `force -i` you can input multiline by appending `\` (back
 
 ## language constructs
 ```text
+: word_def ... [exit] ... ;
+           \ word definition
+           \ <exit> returns from function immediately.
 ( ... )       \ lambda func
 example: ( 1 2 + )
 

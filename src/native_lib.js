@@ -1168,7 +1168,33 @@ class NativeLib{
 				return;
 			}
 		}
-		env.s.push(err.throw("invalid arguments type. a Promise was expected."));
+		env.s.push(err.throw("invalid arguments type. a String was expected."));
+	}
+	string_to_upper_func(){
+		if(env.TOS() && env.is_string(env.TOS())){
+			try{
+				const str=env.s.pop()._datum;
+				env.s.push({"_type":"TC_STR", "_datum":str.toUpperCase()});
+				return;
+			}catch(e){
+				env.s.push(err.throw(e));
+				return;
+			}
+		}
+		env.s.push(err.throw("invalid arguments type. a String was expected."));
+	}
+	string_to_lower_func(){
+		if(env.TOS() && env.is_string(env.TOS())){
+			try{
+				const str=env.s.pop()._datum;
+				env.s.push({"_type":"TC_STR", "_datum":str.toLowerCase()});
+				return;
+			}catch(e){
+				env.s.push(err.throw(e));
+				return;
+			}
+		}
+		env.s.push(err.throw("invalid arguments type. a String was expected."));
 	}
 	populate_repl(){
 		env.set('handle',{_type: 'TC_NATIVE_FUNC', _datum: this.handle_repl_func}, 'TC_WORD');
@@ -1251,6 +1277,8 @@ class NativeLib{
 		env.set('await',{_type: 'TC_NATIVE_FUNC', _datum: this.await_func}, 'TC_WORD');
 		env.set('s:format',{_type: 'TC_NATIVE_FUNC', _datum: this.string_format_func}, 'TC_WORD');
 		env.set('s:len',{_type: 'TC_NATIVE_FUNC', _datum: this.string_length_func}, 'TC_WORD');
+		env.set('s:to_upper',{_type: 'TC_NATIVE_FUNC', _datum: this.string_to_upper_func}, 'TC_WORD');
+		env.set('s:to_lower',{_type: 'TC_NATIVE_FUNC', _datum: this.string_to_lower_func}, 'TC_WORD');
 	}
 };
 

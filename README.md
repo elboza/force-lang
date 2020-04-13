@@ -227,6 +227,8 @@ os:argv       \ ( -- a )
 os:parse-args \ ( -- o )
 s:format      \ ( s a -- a )
 s:len         \ ( s -- n )
+s:to_upper    \ ( s -- s )
+s:to_lower    \ ( s -- s )
 ```
 ## functions descriptions
 

@@ -272,7 +272,20 @@ class NativeLib{
 		env.s.pop();
 	}
 	ndrop_func(){
-		
+		if(env.TOS() && env.TOS()._type=== 'TC_NUM'){
+			try{
+				let n=env.s.pop()._datum;
+				while(n>0) {
+					env.s.pop();
+					n--;
+				}
+				return;
+			}catch(e){
+				env.s.push(err.throw(e));
+				return;
+			}
+		}
+		env.s.push(err.throw("invalid arguments type. TOS is not a number."));
 	}
 	nbye_func(){
 		if(env.TOS() && env.TOS()._type == 'TC_NUM'){

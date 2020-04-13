@@ -16,6 +16,12 @@
 : ddup
 	over over ;
 
+: ndrop2
+  dup is_num if
+  'no number on TOS' throw else
+  begin dup 0 > while 1 - swap drop repeat drop then
+  ;
+
 : ddrop
 	drop drop ;
 

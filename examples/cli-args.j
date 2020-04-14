@@ -8,7 +8,7 @@ os:argv @ .
 ['-h','--help','n'],
 ['-k','--kkk','?']
 ]
-os:parse-args
+os:parse-args .s
 
 // run with:
 // ./cli-args.j -x 99

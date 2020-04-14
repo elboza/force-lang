@@ -1121,7 +1121,8 @@ class NativeLib{
 						args.argv.push(item);
 					}
 				}
-				log.info(args);
+				//log.info(args);
+				env.s.push({"_type":"TC_JSON", "_datum":args});
 				return;
 			}
 			env.s.push(err.throw('invalid arguments. TOS should be a list'));
@@ -1155,7 +1156,7 @@ class NativeLib{
 				return;
 			}
 		}
-		env.s.push(err.throw("invalid arguments type. a Promise was expected."));
+		env.s.push(err.throw("invalid arguments type. a String and a List in TOS and TOS2 was expected."));
 	}
 	string_length_func(){
 		if(env.TOS() && env.is_string(env.TOS())){

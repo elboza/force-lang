@@ -21,6 +21,7 @@ class Stack{
 		var str = '{';
 		str += item._type;
 		if(item._name) str += ' ' + item._name;
+		try{
 		switch(item._type){
 			case 'TC_NUM':
 			case 'TC_STR':
@@ -48,6 +49,9 @@ class Stack{
 				break;
 			default:
 				break;
+		}
+		}catch(e) {
+			str += ' ... ';
 		}
 		str += '}';
 		return str;

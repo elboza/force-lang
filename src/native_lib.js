@@ -8,6 +8,7 @@ const eval = require('./eval');
 const loadfile = require('./load-file');
 const obj_utils = require('./obj_utils');
 const vsprintf = require('format').vsprintf;
+const cheerio = require('cheerio');
 
 class NativeLib{
 	constructor(){
@@ -1242,6 +1243,121 @@ class NativeLib{
 		}
 		env.s.push(err.throw("invalid arguments type. a String was expected."));
 	}
+	xml_load_func(){
+		if(env.TOS() && env.is_string(env.TOS())){
+			try{
+				const str=env.s.pop()._datum;
+				const $ = cheerio.load(str);
+				env.s.push({"_type":env.guess_type($), "_datum":$});
+				return;
+			}catch(e){
+				env.s.push(err.throw(e));
+				return;
+			}
+		}
+		env.s.push(err.throw("invalid arguments type. a String was expected."));
+	}
+	xml_loadXML_func(){
+		if(env.TOS() && env.is_string(env.TOS())){
+			try{
+				const str=env.s.pop()._datum;
+				const $ = cheerio.load(str, {xmlMode: true});
+				env.s.push({"_type":env.guess_type($), "_datum":$});
+				return;
+			}catch(e){
+				env.s.push(err.throw(e));
+				return;
+			}
+		}
+		env.s.push(err.throw("invalid arguments type. a String was expected."));
+	}
+	xml_select_func(){
+		if(env.TOS() && env.TOS2() && env.TOS2()._type=="TC_FUNC_JS" && env.is_string(env.TOS())){
+			try{
+				const arg=env.s.pop()._datum;
+				const $=env.s.pop()._datum;
+				const resp=$(arg);
+				env.s.push({"_type":env.guess_type(resp), "_datum":resp});
+				return;
+			}catch(e){
+				env.s.push(err.throw(e));
+				return;
+			}
+		}
+		env.s.push(err.throw("invalid arguments type. a XML object was expected."));
+	}
+	xml_get_text_func(){
+		if(env.TOS() && env.is_json(env.TOS())){
+			try{
+				const $=env.s.pop()._datum;
+				const resp=$.text();
+				env.s.push({"_type":env.guess_type(resp), "_datum":resp});
+				return;
+			}catch(e){
+				env.s.push(err.throw(e));
+				return;
+			}
+		}
+		env.s.push(err.throw("invalid arguments type. a JSON object was expected."));
+	}
+	xml_get_html_func(){
+		if(env.TOS() && env.is_json(env.TOS())){
+			try{
+				const $=env.s.pop()._datum;
+				const resp=$.html();
+				env.s.push({"_type":env.guess_type(resp), "_datum":resp});
+				return;
+			}catch(e){
+				env.s.push(err.throw(e));
+				return;
+			}
+		}
+		env.s.push(err.throw("invalid arguments type. a JSON object was expected."));
+	}
+	xml_get_attr_func(){
+		if(env.TOS() && env.is_string(env.TOS()) && env.TOS2() && env.is_json(env.TOS2())){
+			try{
+				const attr=env.s.pop()._datum;
+				const $=env.s.pop()._datum;
+				const resp=$.attr(attr);
+				env.s.push({"_type":env.guess_type(resp), "_datum":resp});
+				return;
+			}catch(e){
+				env.s.push(err.throw(e));
+				return;
+			}
+		}
+		env.s.push(err.throw("invalid arguments type. a JSON object was expected."));
+	}
+	xml_has_class_func(){
+		if(env.TOS() && env.is_string(env.TOS()) && env.TOS2() && env.is_json(env.TOS2())){
+			try{
+				const attr=env.s.pop()._datum;
+				const $=env.s.pop()._datum;
+				const resp=$.hasClass(attr);
+				env.s.push(env.set_bool_val(resp));
+				return;
+			}catch(e){
+				env.s.push(err.throw(e));
+				return;
+			}
+		}
+		env.s.push(err.throw("invalid arguments type. a JSON object was expected."));
+	}
+	xml_get_val_func(){
+		if(env.TOS() && env.is_json(env.TOS())){
+			try{
+				const $=env.s.pop()._datum;
+				const resp=$.val();
+				env.s.push({"_type":env.guess_type(resp), "_datum":resp});
+				return;
+			}catch(e){
+				env.s.push(err.throw(e));
+				return;
+			}
+		}
+		env.s.push(err.throw("invalid arguments type. a JSON object was expected."));
+	}
 	populate_repl(){
 		env.set('handle',{_type: 'TC_NATIVE_FUNC', _datum: this.handle_repl_func}, 'TC_WORD');
 	}
@@ -1328,6 +1444,14 @@ class NativeLib{
 		env.set('s:len',{_type: 'TC_NATIVE_FUNC', _datum: this.string_length_func}, 'TC_WORD');
 		env.set('s:to_upper',{_type: 'TC_NATIVE_FUNC', _datum: this.string_to_upper_func}, 'TC_WORD');
 		env.set('s:to_lower',{_type: 'TC_NATIVE_FUNC', _datum: this.string_to_lower_func}, 'TC_WORD');
+		env.set('xml:load',{_type: 'TC_NATIVE_FUNC', _datum: this.xml_load_func}, 'TC_WORD');
+		env.set('xml:loadXML',{_type: 'TC_NATIVE_FUNC', _datum: this.xml_loadXML_func}, 'TC_WORD');
+		env.set('xml:$',{_type: 'TC_NATIVE_FUNC', _datum: this.xml_select_func}, 'TC_WORD');
+		env.set('xml:get_text',{_type: 'TC_NATIVE_FUNC', _datum: this.xml_get_text_func}, 'TC_WORD');
+		env.set('xml:get_html',{_type: 'TC_NATIVE_FUNC', _datum: this.xml_get_html_func}, 'TC_WORD');
+		env.set('xml:get_attr',{_type: 'TC_NATIVE_FUNC', _datum: this.xml_get_attr_func}, 'TC_WORD');
+		env.set('xml:has_class',{_type: 'TC_NATIVE_FUNC', _datum: this.xml_has_class_func}, 'TC_WORD');
+		env.set('xml:get_val',{_type: 'TC_NATIVE_FUNC', _datum: this.xml_get_val_func}, 'TC_WORD');
 	}
 };
 

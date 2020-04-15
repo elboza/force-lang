@@ -232,6 +232,14 @@ s:to_lower    \ ( s -- s )
 f:write       \ ( s1 s2 -- ) s1=data, s2=filename
 f:append      \ ( s1 s2 -- ) s1=data, s2=filename
 f:exists      \ ( s -- b )
+xml:load      \ ( s -- f_js )
+xml:loadXML   \ ( s -- f_js )
+xml:$         \ ( f_js -- j )
+xml:get_text  \ ( j -- s )
+xml:get_html  \ ( j -- s )
+xml:get_attr  \ ( j s -- s )
+xml:has_class \ ( j s -- b )
+xml:get_val   \ ( j -- s )
 ```
 ## functions descriptions
 

@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "bunny-logger": "0.0.2",
+    "cheerio": "^1.0.0-rc.3",
     "commander": "^2.19.0",
     "format": "^0.2.2",
     "json5": "^2.1.0",

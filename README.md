@@ -229,6 +229,9 @@ s:format      \ ( s a -- a )
 s:len         \ ( s -- n )
 s:to_upper    \ ( s -- s )
 s:to_lower    \ ( s -- s )
+f:write       \ ( s1 s2 -- ) s1=data, s2=filename
+f:append      \ ( s1 s2 -- ) s1=data, s2=filename
+f:exists      \ ( s -- b )
 ```
 ## functions descriptions
 
@@ -249,4 +252,6 @@ This function if an implementation of vsprintf. It takes a format string (fmt) a
 example: 
 `"the number %d and the string %s" [22, "hey"] f:format .`
 
+### TODO 
+other standard lib functions  descriptions coming soon ...
 

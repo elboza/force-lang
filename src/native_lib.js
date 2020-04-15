@@ -732,6 +732,51 @@ class NativeLib{
 		}
 		env.s.push(err.throw("invalid arguments type"));
 	}
+	file_write_func(){
+		if(env.TOS() && env.TOS2() && env.is_string(env.TOS()) && env.is_string(env.TOS2())){
+			try{
+				const arg= env.s.pop()._datum;
+				const filename = loadfile.resolve_path(arg);
+				const data = env.s.pop()._datum;
+				loadfile.writesync(filename, data);
+				return;
+			}catch(e){
+				env.s.push(err.throw(e));
+				return;
+			}
+		}
+		env.s.push(err.throw("invalid arguments type. 2 Strings are expected."));
+	}
+	file_append_func(){
+		if(env.TOS() && env.TOS2() && env.is_string(env.TOS()) && env.is_string(env.TOS2())){
+			try{
+				const arg= env.s.pop()._datum;
+				const filename = loadfile.resolve_path(arg);
+				const data = env.s.pop()._datum;
+				loadfile.appendsync(filename, data);
+				return;
+			}catch(e){
+				env.s.push(err.throw(e));
+				return;
+			}
+		}
+		env.s.push(err.throw("invalid arguments type.  2 Strings are expected."));
+	}
+	file_exists_func(){
+		if(env.TOS() && env.is_string(env.TOS())){
+			try{
+				const arg= env.s.pop()._datum;
+				const filename = loadfile.resolve_path(arg);
+				let exists=loadfile.existssync(filename);
+				env.s.push(env.set_bool_val(exists));
+				return;
+			}catch(e){
+				env.s.push(err.throw(e));
+				return;
+			}
+		}
+		env.s.push(err.throw("invalid arguments type.  a String is  expected."));
+	}
 	throw_func(){
 		if(env.TOS() && env.TOS()._type == 'TC_STR'){
 			env.s.push(err.throw(env.s.pop()._datum));
@@ -1262,6 +1307,9 @@ class NativeLib{
 		env.set('<=',{_type: 'TC_NATIVE_FUNC', _datum: this.num_min_eq_func}, 'TC_WORD');
 		env.set('>=',{_type: 'TC_NATIVE_FUNC', _datum: this.num_maj_eq_func}, 'TC_WORD');
 		env.set('f:slurp',{_type: 'TC_NATIVE_FUNC', _datum: this.file_slurp_func}, 'TC_WORD');
+		env.set('f:write',{_type: 'TC_NATIVE_FUNC', _datum: this.file_write_func}, 'TC_WORD');
+		env.set('f:append',{_type: 'TC_NATIVE_FUNC', _datum: this.file_append_func}, 'TC_WORD');
+		env.set('f:exists',{_type: 'TC_NATIVE_FUNC', _datum: this.file_exists_func}, 'TC_WORD');
 		env.set('net:request',{_type: 'TC_NATIVE_FUNC', _datum: this.net_request_func}, 'TC_WORD');
 		env.set('j:require-js',{_type: 'TC_NATIVE_FUNC', _datum: this.require_js_func}, 'TC_WORD');
 		env.set('!!',{_type: 'TC_NATIVE_FUNC', _datum: this.funcjs_exec_func}, 'TC_WORD');

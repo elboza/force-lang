@@ -82,6 +82,9 @@ in the force\-lang repl \fBforce \-i\fP you can input multiline by appending \fB
 .P
 .RS 2
 .nf
+: word_def \.\.\. [exit] \.\.\. ;
+           \\ word definition
+           \\ <exit> returns from function immediately\.
 ( \.\.\. )       \\ lambda func
 example: ( 1 2 + )
 
@@ -137,6 +140,7 @@ m:    for maps (hash)
 f:    for file
 G:    for Globals
 os:   for OS env
+xml:  for xml/dom parser
 .fi
 .RE
 .SH functions signatures
@@ -206,7 +210,7 @@ a:@           \\ ( a n \-\- x )
 a:!           \\ ( a n x \-\- a )
 m:@           \\ ( o s \-\- x )
 m:!           \\ ( o s x \-\- a )
-a:length      \\ ( a \-\- n )
+a:len         \\ ( a \-\- n )
 a:push        \\ ( a x \-\- a )
 a:pop         \\ ( a \-\- x )
 m:keys        \\ ( o \-\- a )
@@ -252,6 +256,20 @@ await         \\ ( p \-\- x )
 os:argv       \\ ( \-\- a )
 os:parse\-args \\ ( \-\- o )
 s:format      \\ ( s a \-\- a )
+s:len         \\ ( s \-\- n )
+s:to_upper    \\ ( s \-\- s )
+s:to_lower    \\ ( s \-\- s )
+f:write       \\ ( s1 s2 \-\- ) s1=data, s2=filename
+f:append      \\ ( s1 s2 \-\- ) s1=data, s2=filename
+f:exists      \\ ( s \-\- b )
+xml:loadDOM   \\ ( s \-\- f_js )
+xml:loadXML   \\ ( s \-\- f_js )
+xml:$         \\ ( f_js \-\- j )
+xml:get_text  \\ ( j \-\- s )
+xml:get_html  \\ ( j \-\- s )
+xml:get_attr  \\ ( j s \-\- s )
+xml:has_class \\ ( j s \-\- b )
+xml:get_val   \\ ( j \-\- s )
 .fi
 .RE
 .SH functions descriptions
@@ -272,4 +290,7 @@ This function removes the latest definition of the wors from the dictionary list
 This function if an implementation of vsprintf\. It takes a format string (fmt) and an args list [args] and returns a formatted string (char\fI vsprintf(\fRfmt, *args)):
 example: 
 \fB"the number %d and the string %s" [22, "hey"] f:format \.\fP
+.SS TODO
+.P
+other standard lib functions  descriptions coming soon \.\.\.
 

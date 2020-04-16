@@ -117,6 +117,7 @@ m:    for maps (hash)
 f:    for file
 G:    for Globals
 os:   for OS env
+xml:  for xml/dom parser
 ```
 ## functions signatures
 in the comments of the stadard lib section is described the stack consumption and the type that the function requires.
@@ -232,7 +233,7 @@ s:to_lower    \ ( s -- s )
 f:write       \ ( s1 s2 -- ) s1=data, s2=filename
 f:append      \ ( s1 s2 -- ) s1=data, s2=filename
 f:exists      \ ( s -- b )
-xml:load      \ ( s -- f_js )
+xml:loadDOM   \ ( s -- f_js )
 xml:loadXML   \ ( s -- f_js )
 xml:$         \ ( f_js -- j )
 xml:get_text  \ ( j -- s )

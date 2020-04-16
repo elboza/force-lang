@@ -1444,7 +1444,7 @@ class NativeLib{
 		env.set('s:len',{_type: 'TC_NATIVE_FUNC', _datum: this.string_length_func}, 'TC_WORD');
 		env.set('s:to_upper',{_type: 'TC_NATIVE_FUNC', _datum: this.string_to_upper_func}, 'TC_WORD');
 		env.set('s:to_lower',{_type: 'TC_NATIVE_FUNC', _datum: this.string_to_lower_func}, 'TC_WORD');
-		env.set('xml:load',{_type: 'TC_NATIVE_FUNC', _datum: this.xml_load_func}, 'TC_WORD');
+		env.set('xml:loadDOM',{_type: 'TC_NATIVE_FUNC', _datum: this.xml_load_func}, 'TC_WORD');
 		env.set('xml:loadXML',{_type: 'TC_NATIVE_FUNC', _datum: this.xml_loadXML_func}, 'TC_WORD');
 		env.set('xml:$',{_type: 'TC_NATIVE_FUNC', _datum: this.xml_select_func}, 'TC_WORD');
 		env.set('xml:get_text',{_type: 'TC_NATIVE_FUNC', _datum: this.xml_get_text_func}, 'TC_WORD');

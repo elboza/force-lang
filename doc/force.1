@@ -1,4 +1,4 @@
-.TH "FORCE" "" "April 2020" "" ""
+.TH "FORCE" "" "July 2022" "" ""
 .SH "NAME"
 \fBForce\fR
 .SS (force\-lang)
@@ -287,7 +287,7 @@ you can throw a string or an object\.
 This function removes the latest definition of the wors from the dictionary list restoring the previous definition if present\.
 .SS s:format \\ ( s a \-\- s )
 .P
-This function if an implementation of vsprintf\. It takes a format string (fmt) and an args list [args] and returns a formatted string (char\fI vsprintf(\fRfmt, *args)):
+This function if an implementation of vsprintf\. It takes a format string (fmt) and an args list [args] and returns a formatted string (char* vsprintf(*fmt, *args)):
 example: 
 \fB"the number %d and the string %s" [22, "hey"] f:format \.\fP
 .SS TODO

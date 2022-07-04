@@ -9,6 +9,7 @@ const loadfile = require('./load-file');
 const obj_utils = require('./obj_utils');
 const vsprintf = require('format').vsprintf;
 const cheerio = require('cheerio');
+const { execSync } = require("child_process");
 
 class NativeLib{
 	constructor(){
@@ -1358,6 +1359,20 @@ class NativeLib{
 		}
 		env.s.push(err.throw("invalid arguments type. a JSON object was expected."));
 	}
+	os_exec(){
+		if(env.TOS() && env.is_string(env.TOS())){
+			try{
+				const str=env.s.pop()._datum;
+				const output=execSync(str).toString();
+				env.s.push({"_type":env.guess_type(output), "_datum":output});
+				return;
+			}catch(e){
+				env.s.push(err.throw(e));
+				return;
+			}
+		}
+		env.s.push(err.throw("invalid arguments type. a String was expected."));
+	}
 	populate_repl(){
 		env.set('handle',{_type: 'TC_NATIVE_FUNC', _datum: this.handle_repl_func}, 'TC_WORD');
 	}
@@ -1452,6 +1467,7 @@ class NativeLib{
 		env.set('xml:get_attr',{_type: 'TC_NATIVE_FUNC', _datum: this.xml_get_attr_func}, 'TC_WORD');
 		env.set('xml:has_class',{_type: 'TC_NATIVE_FUNC', _datum: this.xml_has_class_func}, 'TC_WORD');
 		env.set('xml:get_val',{_type: 'TC_NATIVE_FUNC', _datum: this.xml_get_val_func}, 'TC_WORD');
+		env.set('os:exec',{_type: 'TC_NATIVE_FUNC', _datum: this.os_exec}, 'TC_WORD');
 	}
 };
 

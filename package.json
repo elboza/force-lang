@@ -1,6 +1,6 @@
 {
   "name": "force-lang",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "description": "a modern forth lang compatible with NodeJS",
   "main": "./src/force-lang.js",
   "bin": {
@@ -23,11 +23,11 @@
   },
   "dependencies": {
     "bunny-logger": "0.0.2",
-    "cheerio": "^1.0.0-rc.3",
+    "cheerio": "^1.0.0-rc.12",
     "commander": "^2.19.0",
     "format": "^0.2.2",
-    "json5": "^2.1.0",
-    "marked-man": "^0.2.1",
+    "json5": "^2.2.1",
+    "marked-man": "^0.7.0",
     "request": "^2.88.0",
     "request-promise-native": "^1.0.5",
     "sync-request": "^6.0.0"

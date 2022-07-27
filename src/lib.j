@@ -41,3 +41,6 @@
 
 : j:decode
 	j:parse ;
+
+: a:nth \ (a n -- o)
+	0 begin ddup > while >r >r a:tail r> r> 1 + repeat ddrop a:shift ;

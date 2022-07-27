@@ -59,7 +59,7 @@ module.exports = {
 	resolve_path: filename => {
 		const bin = env.lookup('os:bin')._datum._datum;
 		let xpath = (bin=='')? path.resolve(bin) : path.dirname(path.resolve(bin));
-		xpath= path.join(xpath, filename);
+		xpath= filename.startsWith('/') ? filename : path.join(xpath, filename);
 		return xpath;
 	}
 }

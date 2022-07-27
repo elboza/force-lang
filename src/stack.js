@@ -4,6 +4,7 @@ const obj_utils = require('./obj_utils');
 class Stack{
 	constructor(){
 		this._stack=[];
+		this._rstack=[];
 	}
 	push(e){
 		this._stack.unshift(e);
@@ -11,11 +12,23 @@ class Stack{
 	pop(){
 		return this._stack.shift();
 	}
+	rpush(e){
+		this._rstack.unshift(e);
+	}
+	rpop(){
+		return this._rstack.shift();
+	}
 	peek(){
 		return this._stack[0];
 	}
+	rpeek(){
+		return this._rstack[0];
+	}
 	look_at(i){
 		return this._stack[i];
+	}
+	get_list(){
+		return this._stack;
 	}
 	item_to_str(item){
 		var str = '{';

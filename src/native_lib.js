@@ -1373,6 +1373,61 @@ class NativeLib{
 		}
 		env.s.push(err.throw("invalid arguments type. a String was expected."));
 	}
+	put_r_stack(){
+		if(env.TOS()){
+			try{
+				const element=env.s.pop();
+				env.s.rpush(element);
+				return;
+			}catch(e){
+				env.s.push(err.throw(e));
+				return;
+			}
+		}
+		env.s.push(err.throw("empty stack. Cannot move to r-stack."));
+	}
+	get_r_stack(){
+		if(env.RTOS()){
+			try{
+				const element=env.s.rpop();
+				env.s.push(element);
+				return;
+			}catch(e){
+				env.s.push(err.throw(e));
+				return;
+			}
+		}
+		env.s.push(err.throw("empty r-stack. Cannot move to stack."));
+	}
+	list_head(){
+		if(env.is_list(env.TOS())){
+			try{
+				var value=env.s.pop()._datum.pop();
+				const xval=env.adj_bool_val(value);
+				env.s.push({"_type":env.guess_type(value), "_datum":xval});
+				return;
+			}catch(e){
+				env.s.push(err.throw(e));
+				return;
+			}
+		}
+		env.s.push(err.throw("invalid arguments type. TOS not a list"));
+	}
+	list_tail(){
+		if(env.is_list(env.TOS())){
+			try{
+				var value=env.s.pop()._datum;
+				value.shift()
+				//const xval=env.adj_bool_val(value);
+				env.s.push({"_type":env.guess_type(value), "_datum":value});
+				return;
+			}catch(e){
+				env.s.push(err.throw(e));
+				return;
+			}
+		}
+		env.s.push(err.throw("invalid arguments type. TOS not a list"));
+	}
 	populate_repl(){
 		env.set('handle',{_type: 'TC_NATIVE_FUNC', _datum: this.handle_repl_func}, 'TC_WORD');
 	}
@@ -1468,6 +1523,10 @@ class NativeLib{
 		env.set('xml:has_class',{_type: 'TC_NATIVE_FUNC', _datum: this.xml_has_class_func}, 'TC_WORD');
 		env.set('xml:get_val',{_type: 'TC_NATIVE_FUNC', _datum: this.xml_get_val_func}, 'TC_WORD');
 		env.set('os:exec',{_type: 'TC_NATIVE_FUNC', _datum: this.os_exec}, 'TC_WORD');
+		env.set('>r',{_type: 'TC_NATIVE_FUNC', _datum: this.put_r_stack}, 'TC_WORD');
+		env.set('r>',{_type: 'TC_NATIVE_FUNC', _datum: this.get_r_stack}, 'TC_WORD');
+		env.set('a:head',{_type: 'TC_NATIVE_FUNC', _datum: this.list_head}, 'TC_WORD');
+		env.set('a:tail',{_type: 'TC_NATIVE_FUNC', _datum: this.list_tail}, 'TC_WORD');
 	}
 };
 

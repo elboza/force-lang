@@ -23,6 +23,9 @@ class Env{
 	TOS(){
 		return this.s.peek();
 	}
+	RTOS(){
+		return this.s.rpeek();
+	}
 	TOS2(){
 		return this.s.look_at(1);
 	}

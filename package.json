@@ -1,6 +1,6 @@
 {
   "name": "force-lang",
-  "version": "0.0.15",
+  "version": "0.0.16",
   "description": "a modern forth lang compatible with NodeJS",
   "main": "./src/force-lang.js",
   "bin": {
@@ -47,5 +47,8 @@
     "eslint-plugin-import": "^2.20.2",
     "eslint-plugin-prettier": "^3.1.2",
     "prettier": "^2.0.4"
+  },
+  "resolutions": {
+    "moment": "2.29.4"
   }
 }

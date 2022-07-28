@@ -418,7 +418,8 @@ class NativeLib{
 					env.s.push({"_type":env.guess_type(value), "_datum":xval});
 					return;
 				}
-				env.s.push(err.throw("invalid object key"));
+				//env.s.push(err.throw("invalid object key"));
+				env.s.push({"_type": 'TC_UNDEF', "_datum": 'undefined'});
 				return;
 			}catch(e){
 				env.s.push(err.throw(e));
@@ -1402,7 +1403,7 @@ class NativeLib{
 	list_head(){
 		if(env.is_list(env.TOS())){
 			try{
-				var value=env.s.pop()._datum.pop();
+				var value=env.s.pop()._datum[0];
 				const xval=env.adj_bool_val(value);
 				env.s.push({"_type":env.guess_type(value), "_datum":xval});
 				return;
@@ -1427,6 +1428,23 @@ class NativeLib{
 			}
 		}
 		env.s.push(err.throw("invalid arguments type. TOS not a list"));
+	}
+	string_to_number_func() {
+		if(env.is_string(env.TOS())){
+			try{
+				var value=env.s.pop()._datum;
+				value=Number(value);
+				if(isNaN(value)) {
+					throw("NaN");
+				}
+				env.s.push({"_type":env.guess_type(value), "_datum":value});
+				return;
+			}catch(e){
+				env.s.push(err.throw(e));
+				return;
+			}
+		}
+		env.s.push(err.throw("invalid arguments type. TOS not a string"));
 	}
 	populate_repl(){
 		env.set('handle',{_type: 'TC_NATIVE_FUNC', _datum: this.handle_repl_func}, 'TC_WORD');
@@ -1527,6 +1545,7 @@ class NativeLib{
 		env.set('r>',{_type: 'TC_NATIVE_FUNC', _datum: this.get_r_stack}, 'TC_WORD');
 		env.set('a:head',{_type: 'TC_NATIVE_FUNC', _datum: this.list_head}, 'TC_WORD');
 		env.set('a:tail',{_type: 'TC_NATIVE_FUNC', _datum: this.list_tail}, 'TC_WORD');
+		env.set('s:to_num',{_type: 'TC_NATIVE_FUNC', _datum: this.string_to_number_func}, 'TC_WORD');
 	}
 };
 

@@ -25,7 +25,7 @@ Options:
 ```text
 $ cat example.j
 
-#!/usr/local/bin/force
+#!/usr/bin/env force --
 
 2 2 + .
 ```

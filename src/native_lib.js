@@ -1374,6 +1374,19 @@ class NativeLib{
 		}
 		env.s.push(err.throw("invalid arguments type. a String was expected."));
 	}
+	os_exec_i(){
+		if(env.TOS() && env.is_string(env.TOS())){
+			try{
+				const str=env.s.pop()._datum;
+				execSync(str, {stdio:'inherit'});
+				return;
+			}catch(e){
+				env.s.push(err.throw(e));
+				return;
+			}
+		}
+		env.s.push(err.throw("invalid arguments type. a String was expected."));
+	}
 	put_r_stack(){
 		if(env.TOS()){
 			try{
@@ -1541,6 +1554,7 @@ class NativeLib{
 		env.set('xml:has_class',{_type: 'TC_NATIVE_FUNC', _datum: this.xml_has_class_func}, 'TC_WORD');
 		env.set('xml:get_val',{_type: 'TC_NATIVE_FUNC', _datum: this.xml_get_val_func}, 'TC_WORD');
 		env.set('os:exec',{_type: 'TC_NATIVE_FUNC', _datum: this.os_exec}, 'TC_WORD');
+		env.set('os:exec-i',{_type: 'TC_NATIVE_FUNC', _datum: this.os_exec_i}, 'TC_WORD');
 		env.set('>r',{_type: 'TC_NATIVE_FUNC', _datum: this.put_r_stack}, 'TC_WORD');
 		env.set('r>',{_type: 'TC_NATIVE_FUNC', _datum: this.get_r_stack}, 'TC_WORD');
 		env.set('a:head',{_type: 'TC_NATIVE_FUNC', _datum: this.list_head}, 'TC_WORD');

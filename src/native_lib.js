@@ -154,6 +154,7 @@ class NativeLib{
 			case'TC_NUM':
 			case 'TC_STR':
 			case 'TC_JSON':
+			case 'TC_BOOL':
 			case 'TC_PROMISE':
 				varx._datum = val;
 				//env.set(varx._name, val, varx._type, varx._where);
@@ -173,6 +174,7 @@ class NativeLib{
 			case'TC_NUM':
 			case 'TC_STR':
 			case 'TC_JSON':
+			case 'TC_BOOL':
 			case 'TC_PROMISE':
 				env.s.push(varx._datum);
 				break;

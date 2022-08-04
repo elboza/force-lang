@@ -16,9 +16,6 @@
 : ddup
 	over over ;
 
-: nop
-  noop ;
-
 : ndrop2
   dup is_num if
   'no number on TOS' throw else
@@ -51,4 +48,4 @@
 : s:chomp \ ( s -- s )
 	"" "\n$" rx:replace ;
 
-\ a:find notes \ [11,22,33] ( 22 = ) ( >r dup a:len begin dup 0 > while 1 -  ddup a:nth dup r> dup >r !! T = if nop else "T" . dup . then drop repeat "f" . r> drop drop drop ) !!
+\ a:find notes \ [11,22,33] ( dup a:len begin dup 0 > while 1 - "q " . ddup a:nth .s repeat "f" . ) !!

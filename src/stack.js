@@ -6,6 +6,9 @@ class Stack{
 		this._stack=[];
 		this._rstack=[];
 	}
+	cloneJS(e) {
+		return typeof(e) === 'object' ? JSON.parse(JSON.stringify(e)) : e;
+	}
 	push(e){
 		this._stack.unshift(e);
 	}
@@ -19,13 +22,13 @@ class Stack{
 		return this._rstack.shift();
 	}
 	peek(){
-		return this._stack[0];
+		return this.cloneJS(this._stack[0]);
 	}
 	rpeek(){
 		return this._rstack[0];
 	}
 	look_at(i){
-		return this._stack[i];
+		return this.cloneJS(this._stack[i]);
 	}
 	get_list(){
 		return this._stack;

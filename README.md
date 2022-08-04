@@ -142,6 +142,7 @@ v       variable name
 ```text
 bye           \ ( -- )
 noop          \ ( -- )
+nop           \ ( -- )
 .s            \ ( -- )
 .e            \ ( -- )
 words         \ ( -- )

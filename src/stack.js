@@ -22,6 +22,9 @@ class Stack{
 		return this._rstack.shift();
 	}
 	peek(){
+		if(this._stack[0]?._type === 'TC_FUNC_JS') {
+			return this._stack[0];
+		}
 		return this.cloneJS(this._stack[0]);
 	}
 	rpeek(){

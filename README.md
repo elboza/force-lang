@@ -264,7 +264,7 @@ This function throws an error object on TOS and will trigger the current `handle
 you can throw a string or an object.
 
 ### G:delete \ ( s -- )
-This function removes the latest definition of the wors from the dictionary list restoring the previous definition if present.
+This function removes the latest definition of the word from the dictionary list restoring the previous definition if present.
 
 ### s:format \ ( s a -- s )
 This function if an implementation of vsprintf. It takes a format string (fmt) and an args list [args] and returns a formatted string (char* vsprintf(*fmt, *args)):

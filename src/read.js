@@ -19,6 +19,22 @@ class Read{
 		const num = e - '0';
 		return num>=0 && num<=9 ? true : false ;
 	}
+	is_comment(e){
+		if(e.peek()=='#' && e.lookahead(1)=='!'){
+			return true;
+		}
+		if(e.peek()=='/' && e.lookahead(1)=='/'){
+			return true;
+			this.eat_line_comment(e);
+		}
+		if(e.peek()=='\\'){
+			return true;
+		}
+		if(e.peek()=='-' && e.lookahead(1)=='-'){
+			return true;
+		}
+	return false;	
+	}
 	is_hex_digit(e){
 		if(this.is_eof(e)) return false;
 		const hex_letters = ['a','b,','c','d','e','f'];
@@ -301,8 +317,9 @@ class Read{
 	read(e, filename=null){
 		try{
 			if(filename) {e.set_filename(filename);}
+			//if(this.is_whitespace(e)) {this.eat_whitespaces(e);return {"_type":"TC_NOP", "_where": this.where(e), "_datum": null}}
 			this.eat_whitespaces(e);
-			this.eat_comments(e);
+			if(this.is_comment(e)) {this.eat_comments(e);return {"_type":"TC_NOP", "_where": this.where(e), "_datum": null}}
 			if(this.is_eof(e.peek())) return false;
 			if(this.is_num(e)) return {"_type":"TC_NUM", "_where": this.where(e), "_datum": this.eat_number(e)};
 			if(this.is_string(e.peek())) return {"_type":"TC_STR", "_where": this.where(e), "_datum": this.eat_string(e)};

@@ -22,16 +22,21 @@ class Stack{
 		return this._rstack.shift();
 	}
 	peek(){
-		if(this._stack[0]?._type === 'TC_FUNC_JS') {
-			return this._stack[0];
-		}
-		return this.cloneJS(this._stack[0]);
+// 		if(this._stack[0]?._type === 'TC_FUNC_JS') {
+// 			return this._stack[0];
+// 		}
+// 		if(this._stack[0]?._type==='TC_JSON') {
+// 			return this._stack[0];
+// 		}
+// 		//return this.cloneJS(this._stack[0]);
+		return this._stack[0];
 	}
 	rpeek(){
 		return this._rstack[0];
 	}
 	look_at(i){
-		return this.cloneJS(this._stack[i]);
+		//return this.cloneJS(this._stack[i]);
+		return this._stack[i];
 	}
 	get_list(){
 		return this._stack;

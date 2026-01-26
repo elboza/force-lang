@@ -1,5 +1,6 @@
-"testjs.js" j:require-js
+"testjs.js" j:require-js await
 
+"default" m:@
 var a          //declare variable a
 a !            // assign the required js to the var a
 a @            // put the content of the var a in TOS

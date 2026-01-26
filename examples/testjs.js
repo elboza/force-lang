@@ -1,4 +1,4 @@
-module.exports= {
+export default {
 	foo:2,
 	bar:"pluto",
 	kk:()=>{return 2;},
@@ -7,4 +7,4 @@ module.exports= {
 	kk2:function(){ return this.bar;},
 	alvaro: function(){return "ww";},
 	pp: function(){return Promise.resolve(2);}
-}
+};

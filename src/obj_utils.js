@@ -1,4 +1,4 @@
-module.exports={
+export default {
 	stringify: function(obj, prop) {
   	var placeholder = '____PLACEHOLDER____';
   	var fns = [];

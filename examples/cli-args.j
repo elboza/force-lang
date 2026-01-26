@@ -1,4 +1,4 @@
-#!/usr/bin/env force --
+#!/usr/bin/env force
 
 
 os:argv @ .

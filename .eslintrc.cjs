@@ -1,10 +1,14 @@
 module.exports = {
+    root: true,
     env: {
         es6: true,
         node: true,
     },
+    parserOptions: {
+        ecmaVersion: "latest",
+        sourceType: "module"
+    },
     extends: ['airbnb-base', 'prettier'],
-    plugins: ['prettier'],
     rules: {
         'prettier/prettier': [
             'error',
@@ -30,6 +34,7 @@ module.exports = {
         'no-unsafe-finally': 0, // refactor and enable
         'no-use-before-define': 0, // refactor and enable
         'import/no-unresolved': 0, // some linter import errors
+        'no-underscore-dangle': ['off'],
         'no-undef': 0,
         'class-methods-use-this': 0, // refactor and enable
         'vue/max-attributes-per-line': [

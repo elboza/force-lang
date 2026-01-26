@@ -1,5 +1,5 @@
-const log = require('bunny-logger');
-const Stack = require('./stack');
+import log from 'bunny-logger';
+import Stack from './stack.js';
 
 class dict_obj{
 	constructor(){
@@ -163,4 +163,4 @@ class Env{
 	}
 };
 
-module.exports = new Env();
+export default new Env();

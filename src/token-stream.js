@@ -1,6 +1,4 @@
-'use strict';
-
-const log = require('bunny-logger');
+import  log from 'bunny-logger';
 
 class TokenStream{
   constructor(tokens, filename){
@@ -69,5 +67,5 @@ class TokenStream{
   }
 };
 
-module.exports = TokenStream;
+export default TokenStream;
 

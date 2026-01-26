@@ -1,5 +1,5 @@
-const log = require('bunny-logger');
-const obj_utils = require('./obj_utils');
+import log from 'bunny-logger';
+import obj_utils from './obj_utils.js';
 
 class Stack{
 	constructor(){
@@ -96,4 +96,4 @@ class Stack{
 	}
 }
 
-module.exports = Stack;
+export default Stack;

@@ -2,6 +2,7 @@
   "name": "force-lang",
   "version": "0.0.19",
   "description": "a modern forth lang compatible with NodeJS",
+  "type": "module",
   "main": "./src/force-lang.js",
   "bin": {
     "force": "./force"
@@ -24,13 +25,11 @@
   "dependencies": {
     "bunny-logger": "0.0.2",
     "cheerio": "^1.2.0",
-    "commander": "^2.19.0",
-    "format": "^0.2.2",
+    "commander": "^14.0.2",
+    "got": "^14.6.6",
     "json5": "^2.2.3",
     "marked-man": "^0.7.0",
-    "request": "^2.88.0",
-    "request-promise-native": "^1.0.5",
-    "sync-request": "^6.0.0"
+    "sprintf-js": "^1.1.3"
   },
   "keywords": [
     "forth",
@@ -41,12 +40,12 @@
   ],
   "homepage": "https://github.com/elboza/force-lang.git",
   "devDependencies": {
-    "eslint": "^6.8.0",
-    "eslint-config-airbnb-base": "^14.1.0",
+    "eslint": "^8.57.1",
+    "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-prettier": "^6.10.1",
     "eslint-plugin-import": "^2.20.2",
     "eslint-plugin-prettier": "^3.1.2",
-    "prettier": "^2.0.4"
+    "prettier": "^3.0.1"
   },
   "resolutions": {
     "moment": "2.29.4"

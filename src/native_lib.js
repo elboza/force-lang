@@ -1,15 +1,15 @@
-const log = require('bunny-logger');
+import log from 'bunny-logger';
 //const request = require('request-promise-native');
-const request = require('sync-request');
-const JSON5 = require('json5');
-const env = require('./env');
-const err = require('./error');
-const eval = require('./eval');
-const loadfile = require('./load-file');
-const obj_utils = require('./obj_utils');
-const vsprintf = require('format').vsprintf;
-const cheerio = require('cheerio');
-const { execSync } = require("child_process");
+import JSON5 from 'json5';
+import env from './env.js';
+import err from './error.js';
+import evalx from './eval.js';
+import loadfile from './load-file.js';
+import obj_utils from './obj_utils.js';
+import {vsprintf} from 'sprintf-js';
+import * as cheerio from 'cheerio';
+import { execSync } from 'child_process';
+import got from 'got';
 
 class NativeLib{
 	constructor(){
@@ -332,20 +332,20 @@ class NativeLib{
 		}
 		env.s.push(err.throw('no numbers on top 2 elements of the stack... aborting'));
 	}
-	plus_func(){
-		eval.eval('f+');
+	async plus_func(){
+		await evalx.eval('f+');
 	}
-	minus_func(){
-		eval.eval('n:-');
+	async minus_func(){
+		await evalx.eval('n:-');
 	}
-	times_func(){
-		eval.eval('n:*');
+	async times_func(){
+		await evalx.eval('n:*');
 	}
-	division_func(){
-		eval.eval('n:/');
+	async division_func(){
+		await evalx.eval('n:/');
 	}
-	module_func(){
-		eval.eval('n:%');
+	async module_func(){
+		await evalx.eval('n:%');
 	}
 	string_plus_func(){
 		if(env.is_string(env.TOS()) || env.is_string(env.TOS2())){
@@ -692,28 +692,34 @@ class NativeLib{
 		}
 		env.s.push(err.throw("invalid arguments type."));
 	}
-	net_request_func(){ //async....
+	async net_request_func(){ //async....
 		if(env.is_obj(env.TOS())){
 			try{
-				//let resp= await request(env.s.pop()._datum);
+				// //let resp= await request(env.s.pop()._datum);
 				let x=env.s.pop()._datum;
-				let resp= request(x.method,x.url,x);
-				//env.s.push({"_type":"TC_STR","_datum":resp});
-				env.s.push({"_type":"TC_STR","_datum":resp.body.toString('utf8')}); 
+				let url=x.url;
+				delete x.url;
+				//let resp= request(x.method,x.url,x);
+				let resp=await got(url,x).text();
+				// //env.s.push({"_type":"TC_STR","_datum":resp});
+				//env.s.push({"_type":"TC_STR","_datum":resp.body.toString('utf8')}); 
+				env.s.push({"_type":env.guess_type(resp),"_datum":resp});
 			}catch(e){
-				env.s.push(err.throw(e));
+				let errObj={code: e.response?.statusCode, body:e.response?.body, error:{name: e.name, code: e.code, msg: e.message}}
+				//env.s.push({"_type":env.guess_type(errObj),"_datum":errObj});
+				env.s.push(err.throw(JSON.stringify(errObj)));
 			}
 			return;
 		}
 		env.s.push(err.throw("invalid arguments type."));
 	}
-	included_func(){
+	async included_func(){
 		if(env.is_string(env.TOS())){
 			try{
 				const arg= env.s.pop()._datum;
 				const filename = loadfile.resolve_path(arg);
 				var x = loadfile.loadsync(filename);
-				eval.eval(x);
+				await evalx.eval(x);
 				return;
 			}catch(e){
 				env.s.push(err.throw(e));
@@ -799,7 +805,7 @@ class NativeLib{
 			try{
 				const arg= env.s.pop()._datum;
 				const filename = loadfile.resolve_path(arg);
-				var js=require(filename);
+				var js= import(filename);
 				env.s.push({"_type":env.guess_type(js),"_datum":js});
 				return;
 			}catch(e){
@@ -809,10 +815,10 @@ class NativeLib{
 		}
 		env.s.push(err.throw('invalid request-js argument type'));
 	}
-	funcjs_exec_func(){
+	async funcjs_exec_func(){
 		try{
 			if(env.TOS() && env.TOS()._type=='TC_LAMBDA_FUNC'){
-				eval.eval_parsed(env.s.pop()._datum);
+				await evalx.eval_parsed(env.s.pop()._datum);
 				return;
 			}
 			if(env.TOS() && env.TOS()._type == 'TC_FUNC_JS'){
@@ -1031,7 +1037,7 @@ class NativeLib{
 			env.s.push(err.throw(e));
 		}
 	}
-	array_each_func(){
+	async array_each_func(){
 		try{
 			if(env.TOS() && env.TOS()._type=='TC_LAMBDA_FUNC' && env.is_list(env.TOS2())){
 				let funcall = env.s.pop()._datum;
@@ -1041,7 +1047,7 @@ class NativeLib{
 					var value = array.shift();
 					const xval=env.adj_bool_val(value);
 					env.s.push({"_type":env.guess_type(value), "_datum":xval});
-					eval.eval_parsed(funcall);
+					await evalx.eval_parsed(funcall);
 				}
 				return;
 			}
@@ -1180,12 +1186,14 @@ class NativeLib{
 			env.s.push(err.throw(e));
 		}
 	}
-	await_func(){
+	async await_func(){
 		if(env.TOS() && env.TOS()._type=== 'TC_PROMISE'){
 			try{
-				env.s.pop()._datum.then(x => {
-					env.s.push({"_type":env.guess_type(x), "_datum":x});
-				});
+				let x=await env.s.pop()._datum;
+				env.s.push({"_type":env.guess_type(x), "_datum":x});
+// 				env.s.pop()._datum.then(x => {
+// 					env.s.push({"_type":env.guess_type(x), "_datum":x});
+// 				});
 				return;
 			}catch(e){
 				env.s.push(err.throw(e));
@@ -1565,4 +1573,4 @@ class NativeLib{
 	}
 };
 
-module.exports = new NativeLib();
+export default new NativeLib();

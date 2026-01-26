@@ -1,5 +1,5 @@
-const log = require('bunny-logger');
-const env = require('./env');
+import log from 'bunny-logger';
+import env from './env.js';
 
 class Error {
 	constructor(){
@@ -60,4 +60,4 @@ class Error {
 	}
 }
 
-module.exports = new Error();
+export default new Error();

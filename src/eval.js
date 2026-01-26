@@ -1,10 +1,10 @@
-const log = require('bunny-logger');
-const TokenStream = require('./token-stream');
-const read = require('./read');
-const env = require('./env');
+import log from 'bunny-logger';
+import TokenStream from './token-stream.js';
+import read from './read.js';
+import env from './env.js';
 // const NativeLib = require('./native_lib');
-const loadfile = require('./load-file');
-const err = require('./error');
+import loadfile from './load-file.js';
+import err from './error.js';
 
 class Eval {
   constructor() {
@@ -15,12 +15,13 @@ class Eval {
   }
 
   async load_lib() {
-    const x = await loadfile.load(`${__dirname}/lib.j`);
-    this.eval(x);
+    const x = await loadfile.load(`${import.meta.dirname}/lib.j`);
+    await this.eval(x);
   }
 
+	//deprecated ??
   load_lib_sync() {
-    const x = loadfile.loadsync(`${__dirname}/lib.j`);
+    const x = loadfile.loadsync(`${import.meta.dirname}/lib.j`);
     this.eval(x);
   }
 
@@ -104,7 +105,7 @@ class Eval {
     return list_copy;
   }
 
-  eval_if(stream, list) {
+  async eval_if(stream, list) {
     // log.info('if.:.');
     let y;
     let body = [];
@@ -161,14 +162,14 @@ class Eval {
     // log.info({else_body});
     // log.info({then_body});
     if (env.is_true(env.s.pop())) {
-      this.eval_parsed(then_body);
+      await this.eval_parsed(then_body);
     } else {
-      this.eval_parsed(else_body);
+      await this.eval_parsed(else_body);
     }
     return list_copy;
   }
 
-  eval_while(stream, list) {
+  async eval_while(stream, list) {
     // log.info('while.:.');
     let y;
     let body = [];
@@ -226,16 +227,16 @@ class Eval {
     // log.info({test_body});
     // log.info({while_body});
     while (true) {
-      this.eval_parsed(test_body);
+      await this.eval_parsed(test_body);
       if (!env.is_true(env.s.pop())) {
         break;
       }
-      this.eval_parsed(while_body);
+      await this.eval_parsed(while_body);
     }
     return list_copy;
   }
 
-  eval_case(stream, list) {
+  async eval_case(stream, list) {
     // log.info('case.:.');
     let y;
     let body = [];
@@ -307,18 +308,18 @@ class Eval {
     // let x = env.s.pop();
     for (const item of case_list) {
       // log.info(item.test_body);
-      this.eval_parsed(item.test_body);
+      await this.eval_parsed(item.test_body);
       const y = env.s.pop();
       if (env.is_true(y) /* || x._datum == y._datum */) {
         // log.info(item.case_body);//????
-        this.eval_parsed(item.case_body);
+        await this.eval_parsed(item.case_body);
         break;
       }
     }
     return list_copy;
   }
 
-  eval_parsed_step(e) {
+  async eval_parsed_step(e) {
     let y;
     if (this.mode == 'interpret') {
       if (e._type == 'TC_NUM') {
@@ -338,16 +339,16 @@ class Eval {
           switch (y._datum._type) {
           case 'TC_NATIVE_FUNC':
             err.add_stack(e);
-            y._datum._datum.call();
+            await y._datum._datum.call();
             err.pop_stack();
             break;
           case 'TC_COMP_FUNC':
             err.add_stack(e);
-            this.eval_parsed(y._datum._datum);
+            await this.eval_parsed(y._datum._datum);
             err.pop_stack();
             break;
           case 'TC_FUNC_JS':
-            // this.eval_parsed(y._datum._datum);
+            // await this.eval_parsed(y._datum._datum);
             log.info('js func...');
             break;
           default:
@@ -361,7 +362,7 @@ class Eval {
         }
       }
       if (err.require_handle(` ${e._datum} ${this.where_to_str(e._where)}`)) {
-        this.eval('handle');
+        await this.eval('handle');
       }
     }
     if (this.mode == 'compile') {
@@ -373,7 +374,7 @@ class Eval {
     }
   }
 
-  eval_parsed(e) {
+  async eval_parsed(e) {
     let item;
     let list_copy = JSON.parse(JSON.stringify(e));
     // for(var item of e){
@@ -383,25 +384,25 @@ class Eval {
         continue;
       }
       if (item._datum == 'if') {
-        list_copy = this.eval_if(null, list_copy);
+        list_copy = await this.eval_if(null, list_copy);
         continue;
       }
       if (item._datum == 'begin') {
-        list_copy = this.eval_while(null, list_copy);
+        list_copy = await this.eval_while(null, list_copy);
         continue;
       }
       if (item._datum == 'case') {
-        list_copy = this.eval_case(null, list_copy);
+        list_copy = await this.eval_case(null, list_copy);
         continue;
       }
       if (item._datum == ';' || item._datum == 'exit') {
         break;
       }
-      this.eval_parsed_step(item);
+      await this.eval_parsed_step(item);
     }
   }
 
-  eval(e, filename = null) {
+  async eval(e, filename = null) {
     const stream = read.tokenize(e);
     let x;
     while ((x = read.read(stream, filename)) != false) {
@@ -440,23 +441,23 @@ class Eval {
           continue;
         }
         if (x._datum == 'if') {
-          this.eval_if(stream);
+          await this.eval_if(stream);
           continue;
         }
         if (x._datum == 'begin') {
-          this.eval_while(stream);
+          await this.eval_while(stream);
           continue;
         }
         if (x._datum == 'case') {
-          this.eval_case(stream);
+          await this.eval_case(stream);
           continue;
         }
       }
-      this.eval_parsed_step(x);
+      await this.eval_parsed_step(x);
     }
     // this.s.print();
     // env.print_debug();
   }
 }
 
-module.exports = new Eval();
+export default new Eval();

@@ -1,39 +1,40 @@
 //const repl = require('repl');
-const log = require('bunny-logger');
-const NativeLib = require('./native_lib');
-const eval = require('./eval');
-const loadfile = require('./load-file');
-const env = require('./env');
+import log from 'bunny-logger';
+import NativeLib from './native_lib.js';
+import evalx from './eval.js';
+import loadfile from './load-file.js';
+import env from './env.js';
 
 class Force {
 
 	constructor(){
 		env.set('os:cwd',{_type: 'TC_STR', _datum: process.cwd()}, 'TC_VAR');
 		env.set('os:argv',{_type: 'TC_JSON', _datum: process.argv}, 'TC_VAR');
-		env.set('os:__dirname',{_type: 'TC_STR', _datum: __dirname}, 'TC_VAR');
+		env.set('os:__dirname',{_type: 'TC_STR', _datum: import.meta.dirname}, 'TC_VAR');
 		env.set('os:bin',{_type: 'TC_STR', _datum: ''}, 'TC_VAR');
 	}
 
 	async load_lib(){
-		await eval.load_lib();
+		await evalx.load_lib();
 	}
 	load_lib_sync(){
-		eval.load_lib();
+		evalx.load_lib();
 	}
 	async eval_file(filename){
 		env.set('os:bin',{_type: 'TC_STR', _datum: filename}, 'TC_VAR');
-		eval.eval(await loadfile.load(filename), filename);
+		await evalx.eval(await loadfile.load(filename), filename);
 	}
-	eval_file_sync(filename){
-		env.set('os:bin',{_type: 'TC_STR', _datum: filename}, 'TC_VAR');
-		eval.eval(loadfile.loadsync(filename), filename);
-	}
-	exec(script){
-		eval.eval(script, '<stdin>');
+// 	deprecated ...
+// 	eval_file_sync(filename){
+// 		env.set('os:bin',{_type: 'TC_STR', _datum: filename}, 'TC_VAR');
+// 		evalx.eval(loadfile.loadsync(filename), filename);
+// 	}
+	async exec(script){
+		await evalx.eval(script, '<stdin>');
 	}
 	populate_repl(){
 		NativeLib.populate_repl();
 	}
 };
 
-module.exports = new Force();
+export default new Force();

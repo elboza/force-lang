@@ -1,12 +1,12 @@
-const {promisify} = require('util');
-const fs = require('fs');
-const log = require('bunny-logger');
-const path = require('path');
-const env = require('./env');
+import {promisify} from 'util';
+import fs from 'fs';
+import log from 'bunny-logger';
+import path from 'path';
+import env from './env.js';
 
 const fs_readFile = promisify(fs.readFile);
 
-module.exports = {
+export default {
 	load: async filename => {
 		var x;
 		try{

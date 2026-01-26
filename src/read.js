@@ -1,6 +1,6 @@
-const log = require('bunny-logger');
-const JSON5 = require('json5');
-var TokenStream = require('./token-stream');
+import log from 'bunny-logger';
+import JSON5 from 'json5';
+import TokenStream from './token-stream.js';
 
 class Read{
 	tokenize(e){
@@ -333,4 +333,4 @@ class Read{
 	}
 };
 
-module.exports = new Read();
+export default new Read();

@@ -1,91 +1,90 @@
 #!/usr/bin/env node
 
-//const repl = require('repl');
+// const repl = require('repl');
 import { Command } from 'commander';
 import log from 'bunny-logger';
-//import readline from 'readline';
-import readline from "node:readline";
-import { stdin as input, stdout as output } from "node:process";
-//const pkg = require('./package');
-//import pkg from './package.json' assert { type: 'json' };
+// import readline from 'readline';
+import readline from 'node:readline';
+import { stdin as input, stdout as output } from 'node:process';
+// const pkg = require('./package');
+// import pkg from './package.json' assert { type: 'json' };
 import { createRequire } from 'module';
 import force from './src/force-lang.js';
 
-(async function main(){
-const program = new Command();
-const require = createRequire(import.meta.url);
-const pkg = require('./package.json');
+(async function main() {
+  const program = new Command();
+  const require = createRequire(import.meta.url);
+  const pkg = require('./package.json');
 
-program
-  .version(pkg.version)
-  .usage('[options] [file [args...]]')
-  .arguments('[files...]')
-  //.option('-f, --file [file]', 'input from file')
-  .option('-x, --exec [text]', 'input from string')
-  .option('-i, --shell', 'run repl')
-  .option('-s, --stdin', 'input from stdin (default action)')
-  .allowUnknownOption();
-  //.helpOption('-H, --help', 'display help for force');
-program.parse(process.argv);
-const options = program.opts();
+  program
+    .version(pkg.version)
+    .usage('[options] [file [args...]]')
+    .arguments('[files...]')
+    // .option('-f, --file [file]', 'input from file')
+    .option('-x, --exec [text]', 'input from string')
+    .option('-i, --shell', 'run repl')
+    .option('-s, --stdin', 'input from stdin (default action)')
+    .allowUnknownOption();
+  // .helpOption('-H, --help', 'display help for force');
+  program.parse(process.argv);
+  const options = program.opts();
 
-await force.load_lib();
+  await force.load_lib();
 
-if (program.args.length > 0) {
-	const scriptFile = program.args[0];
-	const scriptArgs = program.args.slice(1);
-	process.argv = [process.argv[0], scriptFile, ...scriptArgs];
-	await force.eval_file(scriptFile);
-} else if (options.exec) {
-	if(typeof(options.exec)!=='string'){
-		log.error('no input given.');
-		process.exit(1);
-	}
-	await force.exec(options.exec);
-} else if (options.shell) {
-	//repl.start({prompt: '> ',eval: function(e){eval.eval(e);}});
+  if (program.args.length > 0) {
+    const scriptFile = program.args[0];
+    const scriptArgs = program.args.slice(1);
+    process.argv = [process.argv[0], scriptFile, ...scriptArgs];
+    await force.eval_file(scriptFile);
+  } else if (options.exec) {
+    if (typeof options.exec !== 'string') {
+      log.error('no input given.');
+      process.exit(1);
+    }
+    await force.exec(options.exec);
+  } else if (options.shell) {
+    // repl.start({prompt: '> ',eval: function(e){eval.eval(e);}});
 
-	force.populate_repl();
+    force.populate_repl();
 
-	var buffered_line = '';
-	input.setRawMode(true);
-	input.resume();
+    let buffered_line = '';
+    input.setRawMode(true);
+    input.resume();
 
-	const rl = readline.createInterface({
-  	input,
-  	output,
-	});
+    const rl = readline.createInterface({
+      input,
+      output,
+    });
 
-	rl.setPrompt('> ');
-	rl.prompt();
+    rl.setPrompt('> ');
+    rl.prompt();
 
-	rl.on('line', async (line) => {
-		if(line[line.length-1]==='\\'){
-			buffered_line += line.substr(0,line.length-1) +' ';
-			rl.setPrompt('... ');
-		} else {
-			if(buffered_line!=='') {
-				buffered_line += line;
-				await force.exec(buffered_line);
-				buffered_line='';
-			}else {
-				await force.exec(line);
-			}
-			rl.setPrompt('> ');
-		}
-		rl.prompt();
-	});
-} else {
-	//log.info(process.stdin);
-	var rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout,
-  terminal: false
-});
+    rl.on('line', async line => {
+      if (line[line.length - 1] === '\\') {
+        buffered_line += `${line.substr(0, line.length - 1)} `;
+        rl.setPrompt('... ');
+      } else {
+        if (buffered_line !== '') {
+          buffered_line += line;
+          await force.exec(buffered_line);
+          buffered_line = '';
+        } else {
+          await force.exec(line);
+        }
+        rl.setPrompt('> ');
+      }
+      rl.prompt();
+    });
+  } else {
+    // log.info(process.stdin);
+    const rl = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout,
+      terminal: false,
+    });
 
-rl.on('line', async function(line){
-    await force.exec(line);
-})
-}
-
+    rl.on('line', async line => {
+      await force.exec(line);
+    });
+  }
 })();

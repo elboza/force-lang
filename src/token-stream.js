@@ -1,9 +1,9 @@
-import  log from 'bunny-logger';
+import log from 'bunny-logger';
 
-class TokenStream{
-  constructor(tokens, filename){
-    if(!Array.isArray(tokens)){
-      //return false;
+class TokenStream {
+  constructor(tokens, filename) {
+    if (!Array.isArray(tokens)) {
+      // return false;
       throw new TypeError('tokens must be passed to TokenStream as an array.');
     }
     this._tokens = tokens;
@@ -11,61 +11,69 @@ class TokenStream{
     this._col = 1;
     this._filename = filename;
   }
-  set_filename(name){
+
+  set_filename(name) {
     this._filename = name;
   }
+
   lookahead(index) {
     if (this._tokens.length <= index) {
       return false;
-      //throw new Error('Cannot read past the end of a stream');
+      // throw new Error('Cannot read past the end of a stream');
     }
     return this._tokens[index];
   }
+
   peek() {
     if (this._tokens.length === 0) {
       return false;
-      //throw new Error('Cannot read past the end of a stream');
+      // throw new Error('Cannot read past the end of a stream');
     }
     return this._tokens[0];
   }
+
   advance() {
     if (this._tokens.length === 0) {
       return false;
-      //throw new Error('Cannot read past the end of a stream');
+      // throw new Error('Cannot read past the end of a stream');
     }
     this._col++;
-    try{
-      if(this.peek()=='\n'){
-        this._col=1;
+    try {
+      if (this.peek() == '\n') {
+        this._col = 1;
         this._line++;
       }
-    }catch(e){
-      //eof
+    } catch (e) {
+      // eof
       this._col--;
     }
     return this._tokens.shift();
   }
+
   defer(token) {
     this._col--;
-    try{
-      if(this.peek()=='\n'){
+    try {
+      if (this.peek() == '\n') {
         this._col = 1;
         this._line--;
       }
-    }catch(e){
-
-    }
+    } catch (e) {}
     this._tokens.unshift(token);
   }
-  print(){
-    if(this._filename) log.info(`in file ${this._filename}`);
+
+  print() {
+    if (this._filename) {
+      log.info(`in file ${this._filename}`);
+    }
     log.info(`at line ${this._line} , col ${this._col}`);
   }
-  print_err(){
-    if(this._filename) log.error(`in file ${this._filename}`);
+
+  print_err() {
+    if (this._filename) {
+      log.error(`in file ${this._filename}`);
+    }
     log.error(`at line ${this._line} , col ${this._col}`);
   }
-};
+}
 
 export default TokenStream;
-

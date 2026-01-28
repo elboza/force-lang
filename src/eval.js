@@ -19,7 +19,7 @@ class Eval {
     await this.eval(x);
   }
 
-	//deprecated ??
+  // deprecated ??
   load_lib_sync() {
     const x = loadfile.loadsync(`${import.meta.dirname}/lib.j`);
     this.eval(x);
@@ -337,25 +337,25 @@ class Eval {
       if (e._type == 'TC_WORD') {
         if ((y = env.lookup(e._datum))) {
           switch (y._datum._type) {
-          case 'TC_NATIVE_FUNC':
-            err.add_stack(e);
-            await y._datum._datum.call();
-            err.pop_stack();
-            break;
-          case 'TC_COMP_FUNC':
-            err.add_stack(e);
-            await this.eval_parsed(y._datum._datum);
-            err.pop_stack();
-            break;
-          case 'TC_FUNC_JS':
-            // await this.eval_parsed(y._datum._datum);
-            log.info('js func...');
-            break;
-          default:
-            this.s.push(y);
-            // log.error(`unknown type ${y._datum._type} for ${y._name}`);
-            // log.error(this.where_to_str(y));
-            break;
+            case 'TC_NATIVE_FUNC':
+              err.add_stack(e);
+              await y._datum._datum.call();
+              err.pop_stack();
+              break;
+            case 'TC_COMP_FUNC':
+              err.add_stack(e);
+              await this.eval_parsed(y._datum._datum);
+              err.pop_stack();
+              break;
+            case 'TC_FUNC_JS':
+              // await this.eval_parsed(y._datum._datum);
+              log.info('js func...');
+              break;
+            default:
+              this.s.push(y);
+              // log.error(`unknown type ${y._datum._type} for ${y._name}`);
+              // log.error(this.where_to_str(y));
+              break;
           }
         } else {
           env.s.push(err.throw(`word not found '${e._datum}' ${this.where_to_str(e._where)}`));
@@ -408,8 +408,8 @@ class Eval {
     while ((x = read.read(stream, filename)) != false) {
       // log.info(x);
       if (x._type == 'TC_NOP') {
-		  continue;
-	  }
+        continue;
+      }
       if (x._type == 'TC_WORD') {
         if (x._datum == 'var') {
           const newvar = read.read(stream);

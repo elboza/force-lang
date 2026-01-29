@@ -25,7 +25,7 @@ Options:
 ```text
 $ cat example.j
 
-#!/usr/bin/env force --
+#!/usr/bin/env force
 
 2 2 + .
 ```
@@ -37,26 +37,21 @@ echo "2 2 + ."|force
 
 ```bash
 $ npm i force-lang
+
+# or
+
+npm install git+https://github.com/elboza/force-lang#master
 ```
 
 ```javascript
-const force = require ('force-lang');
+import force from 'force-lang';
 
 var x = '2 2 + .';
 
 (async function(){
   await force.load_lib();
-  force.exec(x);
+  await force.exec(x);
 })();
-```
-or using sync functions:
-```javascript
-const force = require ('force-lang');
-
-var x = '2 2 + .';
-
-force.load_lib_sync();
-force.exec(x);
 ```
 ## repl multiline
 in the force-lang repl `force -i` you can input multiline by appending `\` (backslash) at the end of the current line before enter

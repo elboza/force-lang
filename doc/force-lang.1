@@ -1,4 +1,4 @@
-.TH "" "1" "January 2026" "0.0.19"
+.TH "" "1" "January 2026" "0.1.0"
 .SH "NAME"
 \fB\fRForce lang
 .SS (force\-lang)
@@ -29,7 +29,7 @@ Options:
 .nf
 $ cat example\.j
 
-#!/usr/bin/env force \-\-
+#!/usr/bin/env force
 
 2 2 + \.
 .fi
@@ -44,30 +44,22 @@ echo "2 2 + \."|force
 .RS 2
 .nf
 $ npm i force\-lang
+
+# or
+
+npm install git+https://github\.com/elboza/force\-lang#master
 .fi
 .RE
 .RS 2
 .nf
-const force = require ('force\-lang');
+import force from 'force\-lang';
 
 var x = '2 2 + \.';
 
 (async function(){
   await force\.load_lib();
-  force\.exec(x);
+  await force\.exec(x);
 })();
-.fi
-.RE
-.P
-or using sync functions:
-.RS 2
-.nf
-const force = require ('force\-lang');
-
-var x = '2 2 + \.';
-
-force\.load_lib_sync();
-force\.exec(x);
 .fi
 .RE
 .SH repl multiline

@@ -1,4 +1,4 @@
-#!../src/force -f
+#!/usr/bin/env force
 
 : eq = ;
 

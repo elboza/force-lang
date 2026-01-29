@@ -1,4 +1,4 @@
-#!/usr/local/bin/force
+#!/usr/bin/env force
 
 : xx2 33 44 ;
 xx2

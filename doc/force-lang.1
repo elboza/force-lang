@@ -1,13 +1,13 @@
-.TH "FORCE" "" "January 2026" "" ""
+.TH "" "1" "January 2026" "0.0.19"
 .SH "NAME"
-\fBForce\fR
+\fB\fRForce lang
 .SS (force\-lang)
 .SH naming the lang
 .P
 Force is a modern dialect of Forth written in NodeJS and can use the NodeJS packages universe\.
+.br
 It is called Force because of its assonance of Forth and since the Force is the main power of the Jedi the files have \.j (or \.jedi) extension\. So Force is the Jedi programmers language !
 .SH using Force as standalone interpreter
-.P
 .RS 2
 .nf
 $ npm install force\-lang \-g
@@ -25,7 +25,6 @@ Options:
 .fi
 .RE
 .SH using Force in script
-.P
 .RS 2
 .nf
 $ cat example\.j
@@ -36,20 +35,17 @@ $ cat example\.j
 .fi
 .RE
 .SH using force in shell
-.P
 .RS 2
 .nf
 echo "2 2 + \."|force
 .fi
 .RE
 .SH using Force as node module
-.P
 .RS 2
 .nf
 $ npm i force\-lang
 .fi
 .RE
-.P
 .RS 2
 .nf
 const force = require ('force\-lang');
@@ -64,7 +60,6 @@ var x = '2 2 + \.';
 .RE
 .P
 or using sync functions:
-.P
 .RS 2
 .nf
 const force = require ('force\-lang');
@@ -79,7 +74,6 @@ force\.exec(x);
 .P
 in the force\-lang repl \fBforce \-i\fP you can input multiline by appending \fB\\\fP (backslash) at the end of the current line before enter
 .SH language constructs
-.P
 .RS 2
 .nf
 : word_def \.\.\. [exit] \.\.\. ;
@@ -90,13 +84,11 @@ example: ( 1 2 + )
 
 see \.\.\.       \\ see function definition
 example: see cr
-
 \|\.\.\. if \.\.\. else \.\.\. then
               \\ if ( x \-\- )
               \\ else ( \-\- )
               \\ then ( \-\- )
 example: T if "no" \. else "yes" \. then
-
 \|\.\.\. begin \.\.\.while  \.\.\.repeat
               \\ begin ( \-\- )
               \\ repeat ( \-\- )
@@ -126,9 +118,10 @@ endcase
 .SH functions prefix
 .P
 functions name can be prefixed to give more meaningful name to the function and the type it act on\.
+.br
 For example \fB@\fP is applied to normal variables to get values, \fBa:@\fP applies to array, \fBm:@\fP applies to maps (hash)\.
+.br
 The main prefixes are:
-.P
 .RS 2
 .nf
 n:    for numbers
@@ -146,7 +139,6 @@ xml:  for xml/dom parser
 .SH functions signatures
 .P
 in the comments of the stadard lib section is described the stack consumption and the type that the function requires\.
-.P
 .RS 2
 .nf
 o       object (map)
@@ -166,7 +158,6 @@ v       variable name
 .fi
 .RE
 .SH standard lib
-.P
 .RS 2
 .nf
 bye           \\ ( \-\- )
@@ -286,20 +277,25 @@ xml:get_val   \\ ( j \-\- s )
 .SS handle \\ ( e \-\- )
 .P
 This function is called every time there is an error object on top of the stack\.
-You can override this function with you own to provide a custom error handling\. This can be permanent or temporary (by deleting the latest definition with \fB\|'handle' G:delete\fP)\.
+.br
+You can override this function with you own to provide a custom error handling\. This can be permanent or temporary (by deleting the latest definition with \fB&#39;handle&#39; G:delete\fP)\.
+.br
 The first thing that your custom handler function should do is to remove the error object from the TOS\. This can be done by eighter removing it (\fBdrop\fP or print \fB\|\.\fP) or by adding another item on top of it (in case you want to preserve it for future use)\.
 .SS throw \\ ( s \-\- ) or ( o \-\- )
 .P
 This function throws an error object on TOS and will trigger the current \fBhandle\fP function\.
+.br
 you can throw a string or an object\.
 .SS G:delete \\ ( s \-\- )
 .P
-This function removes the latest definition of the wors from the dictionary list restoring the previous definition if present\.
+This function removes the latest definition of the word from the dictionary list restoring the previous definition if present\.
 .SS s:format \\ ( s a \-\- s )
 .P
 This function if an implementation of vsprintf\. It takes a format string (fmt) and an args list [args] and returns a formatted string (char* vsprintf(*fmt, *args)):
-example: 
-\fB"the number %d and the string %s" [22, "hey"] f:format \.\fP
+.br
+example:
+.br
+\fB&quot;the number %d and the string %s&quot; [22, &quot;hey&quot;] f:format \.\fP
 .SS TODO
 .P
 other standard lib functions  descriptions coming soon \.\.\.
